@@ -17,6 +17,42 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WORDLIST_PATH = os.path.join(PROJECT_DIR, 'data', 'wordlists', 'common_subdomains.txt')
 RESULTS_DIR = os.path.join(PROJECT_DIR, 'data', 'results')
 
+def load_wordlist():
+    """Load subdomain prefixes from wordlist file."""
+    subdomains = []
+    if os.path.exists(WORDLIST_PATH):
+        try:
+            with open(WORDLIST_PATH, 'r', encoding='utf-8', errors='ignore') as f:
+                subdomains = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+            print(f"{Fore.GREEN}[+] Loaded {len(subdomains)} subdomain prefixes from wordlist.{Style.RESET_ALL}")
+        except Exception as e:
+            print(f"{Fore.RED}[!] Error loading wordlist: {e}{Style.RESET_ALL}")
+    else:
+        print(f"{Fore.YELLOW}[!] Wordlist not found at {WORDLIST_PATH}{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}[*] Using default common subdomains...{Style.RESET_ALL}")
+        # Default common subdomains if wordlist is missing
+        subdomains = [
+            'www', 'mail', 'ftp', 'localhost', 'webmail', 'smtp', 'pop', 'ns1', 'ns2',
+            'dns', 'dns1', 'dns2', 'mx', 'mx1', 'mx2', 'blog', 'dev', 'www2', 'admin',
+            'forum', 'news', 'vpn', 'ns3', 'mail2', 'new', 'mysql', 'old', 'lists',
+            'support', 'mobile', 'mx3', 'wiki', 'shop', 'sql', 'secure', 'beta',
+            'static', 'jobs', 'ads', 'live', 'stage', 'staging', 'app', 'api',
+            'cdn', 'cloud', 'git', 'test', 'demo', 'portal', 'host', 'server',
+            'web', 'email', 'images', 'img', 'media', 'assets', 'files', 'download',
+            'upload', 'backup', 'db', 'database', 'data', 'cache', 'proxy', 'gateway',
+            'auth', 'sso', 'login', 'register', 'account', 'accounts', 'user', 'users',
+            'member', 'members', 'client', 'clients', 'customer', 'customers', 'partner',
+            'partners', 'internal', 'intranet', 'extranet', 'corp', 'corporate', 'hr',
+            'finance', 'sales', 'marketing', 'engineering', 'ops', 'operations', 'devops',
+            'docs', 'documentation', 'help', 'helpdesk', 'ticket', 'tickets', 'issue',
+            'issues', 'jira', 'confluence', 'slack', 'chat', 'meet', 'meeting', 'zoom',
+            'calendar', 'schedule', 'crm', 'erp', 'inventory', 'analytics', 'stats',
+            'status', 'monitor', 'monitoring', 'health', 'ping', 'grafana', 'kibana',
+            'prometheus', 'jenkins', 'ci', 'cd', 'build', 'release', 'deploy', 'prod',
+            'production', 'uat', 'qa', 'testing', 'sandbox', 'preview', 'review'
+        ]
+    return subdomains
+
 def print_subdomain_banner():
     """prints the banner for this specific module."""
     print(f"{Fore.BLUE}{Style.BRIGHT}")
@@ -237,9 +273,20 @@ async def main():
     if not target_input:
         print(f"{Fore.RED}[!] No domain entered. Exiting.{Style.RESET_ALL}"); return
 
-    target_domain = target_input
+    target_domain = sanitize_domain(target_input)
+    
+    # Load subdomain prefixes from wordlist
+    subdomain_prefixes = load_wordlist()
+    
+    if not subdomain_prefixes:
+        print(f"{Fore.RED}[!] No subdomain prefixes to check. Exiting.{Style.RESET_ALL}")
+        return
+    
+    # Build full subdomain names by appending target domain
+    subdomains_to_check = [f"{prefix}.{target_domain}" for prefix in subdomain_prefixes]
     
     print(f"\n{Fore.CYAN}{Style.BRIGHT}[*] Starting scan for {target_domain} with concurrency level {concurrency}...{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}[*] Checking {len(subdomains_to_check)} potential subdomains...{Style.RESET_ALL}")
     
     # Initialize aiodns Resolver
     resolver = aiodns.DNSResolver()

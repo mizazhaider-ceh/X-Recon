@@ -162,8 +162,28 @@ class AppState {
      */
     setNestedState(path, value) {
         const keys = path.split('.');
+        
+        // Validate path - must have at least 2 parts
+        if (keys.length < 2) {
+            console.warn(`setNestedState: Invalid path "${path}". Use setState for single keys.`);
+            return;
+        }
+        
         const lastKey = keys.pop();
-        const target = keys.reduce((obj, key) => obj[key], this.state);
+        
+        // Safely traverse the path, creating objects if needed
+        let target = this.state;
+        for (const key of keys) {
+            if (target[key] === undefined || target[key] === null) {
+                console.warn(`setNestedState: Path "${path}" has undefined segment "${key}"`);
+                return;
+            }
+            if (typeof target[key] !== 'object') {
+                console.warn(`setNestedState: Cannot traverse non-object at "${key}" in path "${path}"`);
+                return;
+            }
+            target = target[key];
+        }
 
         target[lastKey] = value;
 

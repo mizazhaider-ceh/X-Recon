@@ -123,8 +123,14 @@ export class Reports {
         // Add delete listeners
         container.querySelectorAll('.btn-danger').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const filename = e.target.dataset.filename;
-                this.deleteReport(filename);
+                // Use currentTarget to ensure we get the button element with the dataset
+                const button = e.currentTarget;
+                const filename = button.dataset.filename;
+                if (filename) {
+                    this.deleteReport(filename);
+                } else {
+                    console.error('Delete button missing filename data attribute');
+                }
             });
         });
     }

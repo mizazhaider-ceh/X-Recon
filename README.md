@@ -164,9 +164,50 @@ X-Recon/
 
 ## 📸 Screenshots
 
-<details>
-<summary><b>🖥️ Dashboard - Command Center</b></summary>
+### 🖥️ CLI Interface
 
+<details>
+<summary><b>💻 Main Menu - Command Center</b></summary>
+
+<br>
+
+![CLI Main Menu](screenshots/cli-main-menu.png)
+
+**Features:**
+- ASCII art banner with creator info
+- Color-coded menu options
+- Phase-based organization
+- Clean, professional terminal UI
+
+</details>
+
+<details>
+<summary><b>🔍 Scanning in Action</b></summary>
+
+<br>
+
+![CLI Scanning](screenshots/cli-scanning.png)
+
+**Features:**
+- Real-time scan output
+- Progress indicators
+- Color-coded results
+- Module execution logs
+
+</details>
+
+---
+
+### 🌐 Web Dashboard
+
+<details>
+<summary><b>📊 Dashboard - Command Center</b></summary>
+
+<br>
+
+![Web Dashboard](screenshots/web-dashboard.png)
+
+**Features:**
 - Quick scan with module selection
 - Real-time terminal output
 - Interactive command input
@@ -177,6 +218,11 @@ X-Recon/
 <details>
 <summary><b>🎯 Scanner - Multi-Module</b></summary>
 
+<br>
+
+![Web Scanner](screenshots/web-scanner.png)
+
+**Features:**
 - Target configuration
 - Module selection with descriptions
 - One-click scan launch
@@ -187,16 +233,27 @@ X-Recon/
 <details>
 <summary><b>🤖 AI Assistant - X-AI</b></summary>
 
+<br>
+
+![Web AI Chat](screenshots/web-ai-chat.png)
+
+**Features:**
 - Cybersecurity Q&A
 - Code syntax highlighting
 - Keyword emphasis (CVEs, tools)
 - Export conversations
+- Model selection (Llama 70B/8B)
 
 </details>
 
 <details>
-<summary><b>📊 Reports - Professional Output</b></summary>
+<summary><b>📋 Reports - Professional Output</b></summary>
 
+<br>
+
+![Web Reports](screenshots/web-reports.png)
+
+**Features:**
 - HTML report viewer
 - Download & delete options
 - Sortable by date/type
@@ -412,6 +469,9 @@ MIT License - See LICENSE file for details
 
 ---
 
+🇵🇰 → 🇧🇪 *From a small Pakistani village to Belgium's cybersecurity field*
+
+*Built on self-learning, persistence, and faith — Alhamdulillah* 🤲
 
 ---
 
@@ -421,7 +481,6 @@ MIT License - See LICENSE file for details
 [![Email](https://img.shields.io/badge/Email-Contact%20Me-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:mizazhaiderceh@gmail.com)
 
 </div>
-
 
 ---
 
@@ -442,6 +501,7 @@ I'm always open to collaboration! Whether you want to:
 </div>
 
 ---
+
 
 <div align="center">
 

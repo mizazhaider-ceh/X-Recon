@@ -17,6 +17,41 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WORDLIST_PATH = os.path.join(PROJECT_DIR, 'data', 'wordlists', 'common_directories.txt')
 RESULTS_DIR = os.path.join(PROJECT_DIR, 'data', 'results')
 
+def load_wordlist():
+    """Load directory paths from wordlist file."""
+    paths = []
+    if os.path.exists(WORDLIST_PATH):
+        try:
+            with open(WORDLIST_PATH, 'r', encoding='utf-8', errors='ignore') as f:
+                paths = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+            print(f"{Fore.GREEN}[+] Loaded {len(paths)} paths from wordlist.{Style.RESET_ALL}")
+        except Exception as e:
+            print(f"{Fore.RED}[!] Error loading wordlist: {e}{Style.RESET_ALL}")
+    else:
+        print(f"{Fore.YELLOW}[!] Wordlist not found at {WORDLIST_PATH}{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}[*] Using default common directories...{Style.RESET_ALL}")
+        # Default common directories if wordlist is missing
+        paths = [
+            'admin', 'administrator', 'login', 'wp-admin', 'wp-login', 'dashboard',
+            'panel', 'cpanel', 'phpmyadmin', 'api', 'backup', 'backups', 'config',
+            'uploads', 'upload', 'images', 'img', 'css', 'js', 'javascript',
+            'assets', 'static', 'media', 'files', 'docs', 'documents', 'downloads',
+            'robots.txt', 'sitemap.xml', '.git', '.env', '.htaccess', 'wp-content',
+            'wp-includes', 'includes', 'inc', 'lib', 'libs', 'src', 'source',
+            'test', 'tests', 'dev', 'development', 'staging', 'beta', 'debug',
+            'server-status', 'server-info', 'info.php', 'phpinfo.php', 'info',
+            'temp', 'tmp', 'cache', 'log', 'logs', 'error', 'errors', 'cgi-bin',
+            'bin', 'scripts', 'script', 'shell', 'console', 'terminal', 'exec',
+            'data', 'database', 'db', 'sql', 'mysql', 'postgres', 'mongodb',
+            'user', 'users', 'member', 'members', 'account', 'accounts', 'profile',
+            'register', 'signup', 'signin', 'auth', 'authenticate', 'oauth',
+            'api/v1', 'api/v2', 'api/v3', 'rest', 'graphql', 'swagger', 'docs/api',
+            'admin.php', 'login.php', 'index.php', 'config.php', 'setup.php',
+            'install', 'installation', 'setup', 'readme', 'readme.txt', 'readme.md',
+            'changelog', 'license', 'license.txt', 'version', 'version.txt'
+        ]
+    return paths
+
 def print_dir_banner():
     """prints the banner for this specific module."""
     print(f"{Fore.GREEN}{Style.BRIGHT}")

@@ -161,10 +161,19 @@ export class Dashboard {
     }
 
     setupDashboard() {
-        // Setup terminal WebSocket
+        this.reconnectAttempts = 0;
+        this.maxReconnectAttempts = 5;
+        this.reconnectDelay = 2000;
+        
+        this.connectWebSocket();
+    }
+    
+    connectWebSocket() {
+        // Setup terminal WebSocket with auto-reconnect
         this.ws = api.createWebSocket('/ws/terminal', {
             onOpen: () => {
                 this.wsConnected = true;
+                this.reconnectAttempts = 0; // Reset on successful connection
                 this.addTerminalLine('Connected to X-Recon Core.', 'success', 'SYSTEM');
                 appState.setState('isConnected', true);
                 this.updateConnectionStatus(true);
@@ -181,9 +190,23 @@ export class Dashboard {
             },
             onClose: () => {
                 this.wsConnected = false;
-                this.addTerminalLine('Connection lost. Please refresh.', 'error', 'ERROR');
                 appState.setState('isConnected', false);
                 this.updateConnectionStatus(false);
+                
+                // Auto-reconnect logic
+                if (this.reconnectAttempts < this.maxReconnectAttempts) {
+                    this.reconnectAttempts++;
+                    const delay = this.reconnectDelay * this.reconnectAttempts;
+                    this.addTerminalLine(`Connection lost. Reconnecting in ${delay/1000}s... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`, 'warning', 'SYSTEM');
+                    
+                    setTimeout(() => {
+                        if (!this.wsConnected) {
+                            this.connectWebSocket();
+                        }
+                    }, delay);
+                } else {
+                    this.addTerminalLine('Connection lost. Max reconnect attempts reached. Please refresh the page.', 'error', 'ERROR');
+                }
             }
         });
 

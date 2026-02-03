@@ -100,16 +100,33 @@ export class AIChat {
     }
 
     formatAI(text) {
-        let html = this.esc(text);
-        
-        // Code blocks with syntax highlighting
-        html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (match, lang, code) => {
-            const highlighted = this.highlightCode(code, lang || 'bash');
-            return `<div class="code-wrapper"><div class="code-lang">${lang || 'code'}</div><pre class="code-block">${highlighted}</pre></div>`;
+        // Store code blocks before escaping to handle them separately
+        const codeBlocks = [];
+        let processed = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (match, lang, code) => {
+            codeBlocks.push({ lang: lang || 'code', code: code });
+            return `__CODEBLOCK_${codeBlocks.length - 1}__`;
         });
         
-        // Inline code
-        html = html.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+        // Store inline code before escaping
+        const inlineCodes = [];
+        processed = processed.replace(/`([^`]+)`/g, (match, code) => {
+            inlineCodes.push(code);
+            return `__INLINECODE_${inlineCodes.length - 1}__`;
+        });
+        
+        // Now escape the remaining text (outside code)
+        let html = this.esc(processed);
+        
+        // Restore code blocks with syntax highlighting
+        codeBlocks.forEach((block, i) => {
+            const highlighted = this.highlightCode(block.code, block.lang);
+            html = html.replace(`__CODEBLOCK_${i}__`, `<div class="code-wrapper"><div class="code-lang">${block.lang}</div><pre class="code-block">${highlighted}</pre></div>`);
+        });
+        
+        // Restore inline code (escaped)
+        inlineCodes.forEach((code, i) => {
+            html = html.replace(`__INLINECODE_${i}__`, `<code class="inline-code">${this.esc(code)}</code>`);
+        });
         
         // Bold
         html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
@@ -145,29 +162,51 @@ export class AIChat {
     }
     
     highlightCode(code, lang) {
-        let html = code;
+        // First, escape HTML in the raw code
+        let html = this.esc(code);
+        
+        // Store strings temporarily to avoid regex conflicts
+        const stringPlaceholders = [];
+        html = html.replace(/(["'])(?:(?!\1)[^\\]|\\.)*\1/g, (match) => {
+            stringPlaceholders.push(match);
+            return `__STRING_${stringPlaceholders.length - 1}__`;
+        });
+        
+        // Comments (before keywords to avoid conflicts)
+        const commentPlaceholders = [];
+        html = html.replace(/(#[^\n]*)/g, (match) => {
+            commentPlaceholders.push(match);
+            return `__COMMENT_${commentPlaceholders.length - 1}__`;
+        });
+        html = html.replace(/(\/\/[^\n]*)/g, (match) => {
+            commentPlaceholders.push(match);
+            return `__COMMENT_${commentPlaceholders.length - 1}__`;
+        });
         
         // Keywords
-        const keywords = ['if', 'else', 'for', 'while', 'return', 'function', 'def', 'class', 'import', 'from', 'try', 'except', 'catch', 'const', 'let', 'var', 'async', 'await', 'sudo', 'echo', 'cat', 'grep', 'awk', 'sed'];
+        const keywords = ['if', 'else', 'for', 'while', 'return', 'function', 'def', 'class', 'import', 'from', 'try', 'except', 'catch', 'const', 'let', 'var', 'async', 'await', 'sudo', 'echo', 'cat', 'grep', 'awk', 'sed', 'print', 'with', 'as', 'in', 'not', 'and', 'or', 'True', 'False', 'None'];
         keywords.forEach(kw => {
             html = html.replace(new RegExp(`\\b(${kw})\\b`, 'g'), '<span class="syn-keyword">$1</span>');
         });
         
-        // Strings
-        html = html.replace(/(["'])(?:(?!\1)[^\\]|\\.)*\1/g, '<span class="syn-string">$&</span>');
-        
-        // Comments
-        html = html.replace(/(#.*?)(<br>|$)/g, '<span class="syn-comment">$1</span>$2');
-        html = html.replace(/(\/\/.*?)(<br>|$)/g, '<span class="syn-comment">$1</span>$2');
-        
         // Flags (like -A, --version)
         html = html.replace(/\s(-{1,2}[a-zA-Z][a-zA-Z0-9-]*)/g, ' <span class="syn-flag">$1</span>');
         
-        // Numbers
-        html = html.replace(/\b(\d+\.?\d*)\b/g, '<span class="syn-number">$1</span>');
-        
-        // IPs
+        // IPs (before numbers to be more specific)
         html = html.replace(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/g, '<span class="syn-ip">$1</span>');
+        
+        // Numbers (but not inside already-matched patterns)
+        html = html.replace(/\b(\d+\.?\d*)\b(?![^<]*>)/g, '<span class="syn-number">$1</span>');
+        
+        // Restore comments with highlighting
+        commentPlaceholders.forEach((comment, i) => {
+            html = html.replace(`__COMMENT_${i}__`, `<span class="syn-comment">${comment}</span>`);
+        });
+        
+        // Restore strings with highlighting
+        stringPlaceholders.forEach((str, i) => {
+            html = html.replace(`__STRING_${i}__`, `<span class="syn-string">${str}</span>`);
+        });
         
         return html;
     }
@@ -299,7 +338,11 @@ export class AIChat {
 
         const raw = (lastAI.dataset.raw || '') + chunk;
         lastAI.dataset.raw = raw;
-        lastAI.querySelector('.msg-bubble').innerHTML = this.formatAI(raw);
+        
+        const msgBubble = lastAI.querySelector('.msg-bubble');
+        if (msgBubble) {
+            msgBubble.innerHTML = this.formatAI(raw);
+        }
         
         // Update history
         if (this.chatHistory.length > 0) {

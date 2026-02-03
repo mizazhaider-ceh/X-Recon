@@ -6,7 +6,7 @@ import os
 import asyncio
 import webbrowser
 import time
-from fastapi import FastAPI, WebSocket, Request
+from fastapi import FastAPI, WebSocket, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -146,7 +146,7 @@ async def delete_report(filename: str):
     
     # Security: Prevent path traversal with multiple checks
     if '..' in filename or '/' in filename or '\\' in filename:
-        return {"error": "Invalid filename"}, 400
+        raise HTTPException(status_code=400, detail="Invalid filename")
     
     # Additional security: Resolve path and verify it's within RESULTS_DIR
     try:
@@ -156,19 +156,19 @@ async def delete_report(filename: str):
         
         # Ensure the resolved path is actually inside RESULTS_DIR
         if not str(resolved_path).startswith(str(results_dir_resolved)):
-            return {"error": "Path traversal detected"}, 403
+            raise HTTPException(status_code=403, detail="Path traversal detected")
             
     except (ValueError, OSError) as e:
-        return {"error": f"Invalid path: {str(e)}"}, 400
+        raise HTTPException(status_code=400, detail=f"Invalid path: {str(e)}")
     
     if not resolved_path.exists():
-        return {"error": "File not found"}, 404
+        raise HTTPException(status_code=404, detail="File not found")
     
     try:
         resolved_path.unlink()
         return {"success": True, "message": f"Deleted {filename}"}
     except Exception as e:
-        return {"error": str(e)}, 500
+        raise HTTPException(status_code=500, detail=str(e))
 
 # --- WebSocket for Real-Time Terminal Streaming ---
 

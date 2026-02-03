@@ -232,13 +232,20 @@
     </div>
 
     <script>
+        // Sanitize function to prevent XSS
+        function sanitizeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        
         const params = new URLSearchParams(window.location.search);
-        const target = params.get('target') || 'unknown';
-        const modules = params.get('modules') || '';
+        const target = sanitizeHTML(params.get('target') || 'unknown');
+        const modules = sanitizeHTML(params.get('modules') || '');
 
         // Update footer
-        document.getElementById('footer-target').innerText = target;
-        document.getElementById('footer-modules').innerText = modules || 'default';
+        document.getElementById('footer-target').textContent = target;
+        document.getElementById('footer-modules').textContent = modules || 'default';
 
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const wsUrl = `${protocol}//${window.location.host}/ws/terminal`;
@@ -253,7 +260,9 @@
             line.className = `terminal-line ${type}`;
 
             const timestamp = new Date().toLocaleTimeString();
-            line.innerHTML = `<span class="timestamp">[${timestamp}]</span>${message}`;
+            // Sanitize message to prevent XSS from WebSocket data
+            const safeMessage = message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            line.innerHTML = `<span class="timestamp">[${timestamp}]</span>${safeMessage}`;
 
             output.appendChild(line);
             output.scrollTop = output.scrollHeight;
