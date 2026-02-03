@@ -62,7 +62,7 @@ if __name__ == "__main__":
             start_port = int(input("Start port: "))
             end_port = int(input("End port: "))
             ports = list(range(start_port, end_port + 1))
-        except:
+        except (ValueError, TypeError) as e:
             print(f"{Fore.RED}Invalid port range. Using default ports.")
             ports = common_ports
     else:
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     try:
         timeout = float(input("Enter timeout in seconds (default 3): ") or 3)
-    except:
+    except (ValueError, TypeError):
         timeout = 3
 
     output_file = input("Enter output file name (default: banner_results.txt): ").strip()

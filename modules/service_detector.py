@@ -90,7 +90,7 @@ async def check_and_grab_banner(target_ip, port, semaphore):
             return port, False, None
 
 def print_and_save_results(target_host, open_ports_info):
-    """prints the beautiful results table and saves to a file."""
+    """prints the beautiful results table and saves to HTML file."""
     if not open_ports_info:
         print(f"\n{Fore.YELLOW}[-] Analysis Complete. No open ports with banners were found in the specified range.{Style.RESET_ALL}")
         return
@@ -100,56 +100,191 @@ def print_and_save_results(target_host, open_ports_info):
     print(f"{Style.BRIGHT}{Fore.WHITE}{'PORT':<10}{'STATUS':<10}{'SERVICE / BANNER'}{Style.RESET_ALL}")
     print(f"{Fore.WHITE}{'----':<10}{'------':<10}{'------------------'}{Style.RESET_ALL}")
 
-    file_content = [f"--- Service Detection Results for {target_host} ---\n\n"]
+    # Build HTML table rows
+    html_rows = ""
     
     # sort the results by port number before printing for a clean report
     for port, banner in sorted(open_ports_info):
         # Clean up banner for display (remove newlines)
         clean_banner = banner.replace('\n', ' ').replace('\r', '')[:80] 
         print(f"{Fore.GREEN}{port:<10}{'OPEN':<10}{Fore.YELLOW}{clean_banner}{Style.RESET_ALL}")
-        file_content.append(f"[PORT] {port}\n     Banner: {banner}\n\n")
+        html_rows += f"""
+            <tr>
+                <td>{port}</td>
+                <td><span style="color: #00ff9d; font-weight: bold;">OPEN</span></td>
+                <td>{clean_banner}</td>
+            </tr>"""
 
-    results_file = os.path.join(RESULTS_DIR, f'servicedetect_{target_host}.txt')
+    # Generate HTML Report
+    from datetime import datetime
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Detection - {target_host}</title>
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            padding: 2rem;
+            min-height: 100vh;
+        }}
+        .container {{
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }}
+        .header {{
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 2px solid #bd00ff;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }}
+        .header-icon {{ font-size: 2.5rem; }}
+        h1 {{
+            color: #00f3ff;
+            font-size: 1.75rem;
+            margin-bottom: 0.25rem;
+        }}
+        .subtitle {{ color: #888; font-size: 0.9rem; }}
+        .meta {{
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }}
+        .badge {{
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }}
+        .badge-success {{ background: rgba(0, 255, 157, 0.1); border-color: rgba(0, 255, 157, 0.3); color: #00ff9d; }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }}
+        th {{
+            text-align: left;
+            padding: 1rem;
+            background: rgba(189, 0, 255, 0.1);
+            color: #bd00ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }}
+        td {{
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }}
+        tr:hover td {{ background: rgba(255, 255, 255, 0.02); }}
+        .footer {{
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-icon">🔍</span>
+            <div>
+                <h1>Service Detection Report</h1>
+                <div class="subtitle">Banner Grabbing & Service Analysis</div>
+            </div>
+        </div>
+        
+        <div class="meta">
+            <div class="badge">🎯 Target: <strong>{target_host}</strong></div>
+            <div class="badge badge-success">✓ Services Found: <strong>{len(open_ports_info)}</strong></div>
+            <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Port</th>
+                    <th>Status</th>
+                    <th>Service / Banner</th>
+                </tr>
+            </thead>
+            <tbody>
+                {html_rows}
+            </tbody>
+        </table>
+        
+        <div class="footer">
+            <p>Generated by <strong>X-Recon v3.0</strong> | Created by Muhammad Izaz Haider</p>
+        </div>
+    </div>
+</body>
+</html>"""
+
+    # Save HTML file
+    results_file = os.path.join(RESULTS_DIR, f'servicedetect_{target_host}_{timestamp}.html')
     with open(results_file, 'w', encoding='utf-8') as f:
-        f.writelines(file_content)
+        f.write(html_content)
     
-    print(f"\n{Fore.CYAN}[+] Results saved to: {results_file}{Style.RESET_ALL}")
+    print(f"\n{Fore.CYAN}[+] HTML Report saved to: {results_file}{Style.RESET_ALL}")
 
 async def main():
+    import sys
     os.makedirs(RESULTS_DIR, exist_ok=True)
     print_detector_banner()
     
-    target_host = input(f"{Fore.CYAN}Enter the target IP or domain: {Style.RESET_ALL}").strip()
-
-    try:
-        # Resolve hostname synchronously (fast enough generally)
-        target_ip = socket.gethostbyname(target_host)
-        print(f"{Fore.GREEN}[i] Target resolved to IP: {target_ip}{Style.RESET_ALL}")
-    except socket.gaierror:
-        print(f"{Fore.RED}[!] Invalid hostname. Exiting.{Style.RESET_ALL}"); return
-
-    ports_input = input(f"{Fore.CYAN}Enter ports to analyze (e.g., 21,22,80-1024): {Style.RESET_ALL}")
+    target_host = ""
+    ports_to_check = []
+    concurrency = 200 # Default fast
     
-    try:
-        ports_to_check = parse_ports(ports_input)
-        if not ports_to_check: raise ValueError("No valid ports provided.")
-    except ValueError as e:
-        print(f"{Fore.RED}[!] Error in port selection: {e}. Exiting.{Style.RESET_ALL}"); return
-    
-    print("\n---[ Scan Speed (Async Concurrency) ]---")
-    print("[1] Normal (50 concurrent connections)")
-    print("[2] Fast (200 concurrent connections)")
-    print("[3] Insane (500 concurrent connections)")
-    speed_choice = input(f"{Fore.CYAN}Select an option: {Style.RESET_ALL}").strip()
-    
-    concurrency = 50 
-    if speed_choice == '2': concurrency = 200
-    elif speed_choice == '3': concurrency = 500
+    if len(sys.argv) > 1:
+        target_host = sys.argv[1]
+        print(f"{Fore.CYAN}[info]Target received via CLI: {target_host}[/info]")
+        # Default ports for headless: Top 20 common ports to be fast
+        ports_to_check = [21, 22, 23, 25, 53, 80, 110, 135, 139, 143, 443, 445, 993, 1433, 3306, 3389, 5900, 8080, 8443]
+        print("[dim]Running in automated mode (Ports: Top 20, Speed: Fast)[/dim]")
+    else:
+        target_host = input(f"{Fore.CYAN}Enter the target IP or domain: {Style.RESET_ALL}").strip()
+        ports_input = input(f"{Fore.CYAN}Enter ports to analyze (e.g., 21,22,80-1024): {Style.RESET_ALL}")
+        try:
+            ports_to_check = parse_ports(ports_input)
+            if not ports_to_check: raise ValueError("No valid ports provided.")
+        except ValueError as e:
+            print(f"{Fore.RED}[!] Error in port selection: {e}. Exiting.{Style.RESET_ALL}"); return
+            
+        print("\n---[ Scan Speed (Async Concurrency) ]---")
+        print("[1] Normal (50 concurrent connections)")
+        print("[2] Fast (200 concurrent connections)")
+        print("[3] Insane (500 concurrent connections)")
+        speed_choice = input(f"{Fore.CYAN}Select an option: {Style.RESET_ALL}").strip()
+        
+        concurrency = 50 
+        if speed_choice == '2': concurrency = 200
+        elif speed_choice == '3': concurrency = 500
 
     print(f"\n{Fore.CYAN}{Style.BRIGHT}[*] Analyzing {len(ports_to_check)} port(s) with concurrency level {concurrency}...{Style.RESET_ALL}")
     
     semaphore = asyncio.Semaphore(concurrency)
-    tasks = [check_and_grab_banner(target_ip, p, semaphore) for p in ports_to_check]
+    tasks = [check_and_grab_banner(target_host, p, semaphore) for p in ports_to_check]
     
     open_ports_with_banners = []
     

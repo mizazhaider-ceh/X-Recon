@@ -1,0 +1,123 @@
+/* 
+ * X-Recon v3.0 - Layout Components
+ * Sidebar, Main Content, Grid Systems
+ */
+
+/* App Container */
+.app-container {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--surface-border);
+    padding: var(--gap-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.logo {
+    text-align: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.logo h1 {
+    font-family: var(--font-display);
+    color: var(--brand-cyan);
+    font-size: 1.6rem;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+}
+
+.logo-version {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* Navigation */
+.nav-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: rgba(0, 243, 255, 0.08);
+    color: var(--brand-cyan);
+    box-shadow: inset 3px 0 0 0 var(--brand-cyan);
+}
+
+.nav-link-icon {
+    font-size: 1.1rem;
+}
+
+/* Main Content */
+.main-content {
+    padding: var(--gap-lg);
+    overflow-y: auto;
+    position: relative;
+    background: radial-gradient(circle at top right, rgba(0, 243, 255, 0.03), transparent 40%);
+}
+
+/* Status Indicator */
+.status-indicator {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-sm);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: all 0.3s;
+}
+
+.status-dot.online {
+    background: var(--brand-green);
+    box-shadow: 0 0 10px var(--brand-green);
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-header h2 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    color: var(--brand-cyan);
+}

@@ -1,0 +1,111 @@
+/* 
+ * X-Recon v3.0 - Reports Page Styles
+ */
+
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--gap-md);
+}
+
+.report-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.report-card:hover {
+    background: rgba(0, 243, 255, 0.05);
+    border-color: var(--brand-cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.report-icon {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+}
+
+.report-icon.html { color: var(--brand-green); }
+.report-icon.txt { color: var(--brand-cyan); }
+.report-icon.json { color: var(--brand-magenta); }
+
+.report-name {
+    font-weight: 600;
+    color: var(--text-main);
+    word-break: break-all;
+    line-height: 1.4;
+    font-size: 0.9rem;
+}
+
+.report-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+}
+
+.report-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.report-btn {
+    flex: 1;
+    padding: 0.5rem;
+    text-align: center;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+}
+
+.report-btn-view {
+    background: rgba(0, 243, 255, 0.1);
+    color: var(--brand-cyan);
+    border: 1px solid var(--brand-cyan);
+}
+
+.report-btn-view:hover {
+    background: var(--brand-cyan);
+    color: #000;
+}
+
+.report-btn-delete {
+    background: rgba(255, 0, 85, 0.1);
+    color: var(--brand-red);
+    border: 1px solid rgba(255, 0, 85, 0.3);
+}
+
+.report-btn-delete:hover {
+    background: var(--brand-red);
+    color: #fff;
+}
+
+/* Empty State */
+.reports-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+}
+
+.reports-empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.reports-empty h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}

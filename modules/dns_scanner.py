@@ -170,8 +170,200 @@ def perform_subdomain_scan(domain: str, thread_count: int) -> dict | None:
     return found_subdomains
 
 def save_results(domain: str, results: dict):
-    """Saves all collected information into a single report file."""
-    # ... (saving logic remains the same) ...
+    """Saves all collected information into a professional HTML report."""
+    from datetime import datetime
+    
+    # Create results directory if it doesn't exist
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    results_dir = os.path.join(script_dir, '..', 'data', 'results')
+    os.makedirs(results_dir, exist_ok=True)
+    
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    # Build DNS records HTML
+    dns_html = ""
+    if results.get("dns"):
+        dns_rows = ""
+        for record_type, values in sorted(results["dns"].items()):
+            values_html = "<br>".join(str(v) for v in values) if isinstance(values, list) else str(values)
+            dns_rows += f"<tr><td><strong>{record_type}</strong></td><td>{values_html}</td></tr>"
+        dns_html = f"""
+        <div class="section">
+            <h2>🌐 DNS Records</h2>
+            <table>
+                <thead><tr><th>Record Type</th><th>Value</th></tr></thead>
+                <tbody>{dns_rows}</tbody>
+            </table>
+        </div>"""
+    
+    # Build WHOIS HTML
+    whois_html = ""
+    if results.get("whois"):
+        whois_rows = ""
+        for key, value in results["whois"].items():
+            if value:
+                display_key = key.replace('_', ' ').title()
+                if isinstance(value, list):
+                    value_str = "<br>".join(str(item) for item in value)
+                elif isinstance(value, datetime):
+                    value_str = value.strftime('%Y-%m-%d %H:%M:%S')
+                else:
+                    value_str = str(value)
+                whois_rows += f"<tr><td><strong>{display_key}</strong></td><td>{value_str}</td></tr>"
+        whois_html = f"""
+        <div class="section">
+            <h2>📋 WHOIS Information</h2>
+            <table>
+                <thead><tr><th>Attribute</th><th>Value</th></tr></thead>
+                <tbody>{whois_rows}</tbody>
+            </table>
+        </div>"""
+    
+    # Build Subdomains HTML
+    subdomains_html = ""
+    if results.get("subdomains"):
+        sub_rows = ""
+        for subdomain, ip in sorted(results["subdomains"].items()):
+            sub_rows += f"<tr><td>{subdomain}</td><td><code>{ip}</code></td></tr>"
+        subdomains_html = f"""
+        <div class="section">
+            <h2>🔍 Discovered Subdomains ({len(results['subdomains'])} found)</h2>
+            <table>
+                <thead><tr><th>Subdomain</th><th>IP Address</th></tr></thead>
+                <tbody>{sub_rows}</tbody>
+            </table>
+        </div>"""
+    
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Intelligence Report - {domain}</title>
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            padding: 2rem;
+            min-height: 100vh;
+        }}
+        .container {{
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }}
+        .header {{
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 2px solid #00f3ff;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }}
+        .header-icon {{ font-size: 2.5rem; }}
+        h1 {{ color: #00f3ff; font-size: 1.75rem; margin-bottom: 0.25rem; }}
+        .subtitle {{ color: #888; font-size: 0.9rem; }}
+        .meta {{
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }}
+        .badge {{
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }}
+        .section {{
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }}
+        .section h2 {{
+            color: #bd00ff;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(189, 0, 255, 0.3);
+        }}
+        table {{ width: 100%; border-collapse: collapse; }}
+        th {{
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background: rgba(189, 0, 255, 0.1);
+            color: #bd00ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }}
+        td {{
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: top;
+        }}
+        tr:hover td {{ background: rgba(255, 255, 255, 0.02); }}
+        code {{
+            background: rgba(0, 255, 157, 0.1);
+            color: #00ff9d;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+        }}
+        .footer {{
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-icon">🌐</span>
+            <div>
+                <h1>DNS Intelligence Report</h1>
+                <div class="subtitle">Comprehensive Domain Analysis</div>
+            </div>
+        </div>
+        
+        <div class="meta">
+            <div class="badge">🎯 Target: <strong>{domain}</strong></div>
+            <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
+        </div>
+        
+        {dns_html}
+        {whois_html}
+        {subdomains_html}
+        
+        <div class="footer">
+            <p>Generated by <strong>X-Recon v3.0</strong> - IntelScan Module | Created by Muhammad Izaz Haider</p>
+        </div>
+    </div>
+</body>
+</html>"""
+
+    results_file = os.path.join(results_dir, f'dnsscan_{domain}_{timestamp}.html')
+    with open(results_file, 'w', encoding='utf-8') as f:
+        f.write(html_content)
+    
+    console.print(f"\n[bold green][+] HTML Report saved to: {results_file}[/bold green]")
 
 def main():
     """The main function to run the application logic."""

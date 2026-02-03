@@ -1,0 +1,154 @@
+/* 
+ * X-Recon v3.0 - Dashboard Styles
+ */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--gap-lg);
+    margin-bottom: var(--gap-lg);
+}
+
+/* Quick Scan Widget */
+.quick-scan-widget {
+    grid-column: span 2;
+}
+
+.quick-scan-form {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.quick-scan-form .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.scan-modules-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.module-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.65rem;
+    background: rgba(0, 243, 255, 0.08);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.module-chip:hover {
+    background: rgba(0, 243, 255, 0.15);
+}
+
+.module-chip.active {
+    background: rgba(0, 243, 255, 0.2);
+    border-color: var(--brand-cyan);
+    color: var(--brand-cyan);
+}
+
+.module-chip input {
+    display: none;
+}
+
+/* Scan Progress */
+.scan-progress-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+}
+
+.scan-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-muted);
+}
+
+.scan-status-dot.running {
+    background: var(--brand-green);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 157, 0.7); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 8px rgba(0, 255, 157, 0); }
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--surface-border);
+    border-top-color: var(--brand-cyan);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Recent Activity */
+.recent-activity {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 243, 255, 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+}
+
+.activity-info {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Terminal User Input Styling */
+.terminal-line.terminal-user {
+    color: var(--brand-cyan);
+}
+
+.terminal-line.terminal-user .terminal-prefix {
+    color: var(--brand-green);
+    font-weight: 700;
+}

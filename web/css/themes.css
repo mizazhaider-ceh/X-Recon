@@ -1,0 +1,29 @@
+/* 
+ * X-Recon v3.0 - Theme Variations
+ */
+
+/* Theme: Matrix Green */
+body.theme-green {
+    --bg-dark: #0a0e0a;
+    --bg-panel: rgba(10, 30, 10, 0.7);
+    --brand-cyan: #00ff41;
+    --brand-magenta: #39ff14;
+    --brand-green: #00ff41;
+    --brand-red: #ff4444;
+    --text-main: #00ff41;
+    --text-muted: #4d9966;
+    --surface-border: rgba(0, 255, 65, 0.15);
+}
+
+/* Theme: Stealth Dark */
+body.theme-dark {
+    --bg-dark: #000000;
+    --bg-panel: rgba(15, 15, 15, 0.8);
+    --brand-cyan: #888888;
+    --brand-magenta: #666666;
+    --brand-green: #aaaaaa;
+    --brand-red: #ff3333;
+    --text-main: #cccccc;
+    --text-muted: #666666;
+    --surface-border: rgba(255, 255, 255, 0.05);
+}

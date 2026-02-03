@@ -10,3 +10,5 @@ cerebras_cloud_sdk
 aiohttp
 aiodns
 python-dotenv
+fastapi
+uvicorn

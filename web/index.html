@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Recon v3.0 // Command Center</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles - Modular CSS -->
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h1>X-RECON</h1>
+                <div class="logo-version">v3.0 WEB</div>
+            </div>
+
+            <ul class="nav-links">
+                <li>
+                    <a href="#dashboard" class="nav-link active" data-route="dashboard">
+                        <span class="nav-link-icon">📊</span>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#scanner" class="nav-link" data-route="scanner">
+                        <span class="nav-link-icon">🎯</span>
+                        Start Scan
+                    </a>
+                </li>
+                <li>
+                    <a href="#reports" class="nav-link" data-route="reports">
+                        <span class="nav-link-icon">📄</span>
+                        Reports
+                    </a>
+                </li>
+                <li>
+                    <a href="#ai" class="nav-link" data-route="ai">
+                        <span class="nav-link-icon">🤖</span>
+                        AI Assistant
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" class="nav-link" data-route="settings">
+                        <span class="nav-link-icon">⚙️</span>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span>System Offline</span>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content" id="app-content">
+            <!-- Content will be dynamically rendered here -->
+            <div
+                style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--text-muted);">
+                <div class="loading-spinner"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Main Application -->
+    <script type="module" src="/static/js/main.js"></script>
+</body>
+
+</html>

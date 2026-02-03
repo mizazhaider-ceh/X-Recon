@@ -1,0 +1,94 @@
+/* 
+ * X-Recon v3.0 - Card Styles
+ */
+
+.card {
+    background: var(--bg-panel);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.card-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--brand-cyan);
+    letter-spacing: 0.05em;
+}
+
+/* Stat Card */
+.stat-card {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.stat-card h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+}
+
+.stat-card .value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-family: var(--font-display);
+    color: var(--brand-cyan);
+}
+
+.stat-card .value.danger {
+    color: var(--brand-red);
+    text-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+}
+
+.stat-card .value.warning {
+    color: var(--brand-magenta);
+}
+
+/* Option Card */
+.option-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--surface-border);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option-card:hover {
+    background: rgba(0, 243, 255, 0.05);
+    border-color: var(--brand-cyan);
+}
+
+.option-card.selected {
+    background: rgba(0, 243, 255, 0.1);
+    border-color: var(--brand-cyan);
+}
+
+.option-card .opt-title {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.option-card .opt-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}

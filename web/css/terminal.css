@@ -1,0 +1,112 @@
+/* 
+ * X-Recon v3.0 - Terminal Styles
+ */
+
+.terminal-card {
+    grid-column: 1 / -1;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.terminal-title {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--brand-green);
+}
+
+.terminal-body {
+    flex: 1;
+    background: #000;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    font-size: 0.85rem;
+    color: #ccc;
+    overflow-y: auto;
+    border-left: 2px solid var(--brand-green);
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+    font-family: var(--font-mono);
+}
+
+.terminal-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.terminal-prefix {
+    color: var(--brand-cyan);
+    font-weight: bold;
+    min-width: 60px;
+}
+
+.terminal-time {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    min-width: 70px;
+}
+
+.terminal-msg {
+    flex: 1;
+    word-break: break-word;
+}
+
+/* Terminal Line Types */
+.terminal-success .terminal-msg {
+    color: var(--brand-green);
+}
+
+.terminal-error .terminal-msg {
+    color: var(--brand-red);
+}
+
+.terminal-warning .terminal-msg {
+    color: #ffaa00;
+}
+
+.terminal-info .terminal-msg {
+    color: var(--brand-cyan);
+}
+
+.terminal-highlight .terminal-msg {
+    color: var(--brand-magenta);
+    font-weight: bold;
+}
+
+/* Terminal Prompt */
+.terminal-prompt {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--surface-border);
+    margin-top: 0.5rem;
+}
+
+.terminal-prompt::before {
+    content: '>';
+    color: var(--brand-green);
+    font-weight: bold;
+}
+
+.terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    outline: none;
+}

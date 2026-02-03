@@ -60,7 +60,7 @@ def search_cves_for_one_query(query):
 
 def print_and_save_results(all_results):
     """
-    prints the beautiful results table for all queries and saves to one file.
+    prints the beautiful results table for all queries and saves to HTML file.
     """
     if not any(res for q, res in all_results.items() if res):
         print(f"\n{Fore.YELLOW}[-] No CVEs found for any of the provided queries.{Style.RESET_ALL}")
@@ -68,23 +68,34 @@ def print_and_save_results(all_results):
 
     print(f"\n{Fore.GREEN}{Style.BRIGHT}✅ Search Complete! Results found for {len(all_results)} quer(ies).\n")
     
-    file_content = [f"--- Multi-CVE Lookup Results ---\n\n"]
+    from datetime import datetime
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    html_sections = ""
     
     # loop through each query and its results
     for query, cve_list in all_results.items():
         print(f"{Style.BRIGHT}{Fore.CYAN}================[ Results for: {query} ]================{Style.RESET_ALL}")
-        file_content.append(f"==== Results for: {query} ====\n\n")
 
         if cve_list is None:
             print(f"{Fore.RED}  -> Network Error: Could not fetch results.{Style.RESET_ALL}\n")
-            file_content.append("  -> Network Error: Could not fetch results.\n\n")
+            html_sections += f"""
+            <div class="query-section">
+                <h3>🔍 {query}</h3>
+                <p style="color: #ff4757;">Network Error: Could not fetch results.</p>
+            </div>"""
             continue
         
         if not cve_list:
             print(f"{Fore.YELLOW}  -> No CVEs found in the database.{Style.RESET_ALL}\n")
-            file_content.append("  -> No CVEs found in the database.\n\n")
+            html_sections += f"""
+            <div class="query-section">
+                <h3>🔍 {query}</h3>
+                <p style="color: #ffa502;">No CVEs found in the database.</p>
+            </div>"""
             continue
 
+        cve_rows = ""
         for cve in cve_list:
             cve_id = cve.get('id', 'N/A')
             title = cve.get('title', 'No title available.')
@@ -95,17 +106,175 @@ def print_and_save_results(all_results):
             print(f"    Title: {Fore.WHITE}{title}")
             print(f"    Score: {color}{cvss_score}{Style.RESET_ALL}\n")
             
-            file_content.append(f"  ID: {cve_id}\n")
-            file_content.append(f"  Title: {title}\n")
-            file_content.append(f"  CVSS Score: {cvss_score}\n")
-            file_content.append("  " + "-" * 20 + "\n")
+            # Determine severity color for HTML
+            if cvss_score >= 9.0:
+                score_color = "#ff0000"
+                severity = "CRITICAL"
+            elif cvss_score >= 7.0:
+                score_color = "#ff4757"
+                severity = "HIGH"
+            elif cvss_score >= 4.0:
+                score_color = "#ffa502"
+                severity = "MEDIUM"
+            else:
+                score_color = "#00ff9d"
+                severity = "LOW"
+            
+            cve_rows += f"""
+                <tr>
+                    <td><code>{cve_id}</code></td>
+                    <td>{title[:80]}{'...' if len(title) > 80 else ''}</td>
+                    <td><span style="color: {score_color}; font-weight: bold;">{cvss_score}</span></td>
+                    <td><span class="severity-badge" style="background: {score_color}20; color: {score_color}; border: 1px solid {score_color}40;">{severity}</span></td>
+                </tr>"""
+        
+        html_sections += f"""
+        <div class="query-section">
+            <h3>🔍 {query}</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>CVE ID</th>
+                        <th>Title</th>
+                        <th>CVSS</th>
+                        <th>Severity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {cve_rows}
+                </tbody>
+            </table>
+        </div>"""
 
-    # --- save the single, combined report ---
-    results_file = os.path.join(RESULTS_DIR, 'cve_multisearch_report.txt')
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE Lookup Report</title>
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            padding: 2rem;
+            min-height: 100vh;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }}
+        .header {{
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 2px solid #ff4757;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }}
+        .header-icon {{ font-size: 2.5rem; }}
+        h1 {{ color: #ff4757; font-size: 1.75rem; margin-bottom: 0.25rem; }}
+        .subtitle {{ color: #888; font-size: 0.9rem; }}
+        .meta {{
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }}
+        .badge {{
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }}
+        .query-section {{
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }}
+        .query-section h3 {{
+            color: #00f3ff;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }}
+        table {{ width: 100%; border-collapse: collapse; }}
+        th {{
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 71, 87, 0.1);
+            color: #ff4757;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }}
+        td {{ padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); vertical-align: top; }}
+        tr:hover td {{ background: rgba(255, 255, 255, 0.02); }}
+        code {{
+            background: rgba(0, 243, 255, 0.1);
+            color: #00f3ff;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+        }}
+        .severity-badge {{
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }}
+        .footer {{
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-icon">🛡️</span>
+            <div>
+                <h1>CVE Vulnerability Report</h1>
+                <div class="subtitle">Multi-Threaded CVE & Vulnerability Search</div>
+            </div>
+        </div>
+        
+        <div class="meta">
+            <div class="badge">🔍 Queries: <strong>{len(all_results)}</strong></div>
+            <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
+        </div>
+        
+        {html_sections}
+        
+        <div class="footer">
+            <p>Generated by <strong>X-Recon v3.0</strong> | Data from Vulners API | Created by Muhammad Izaz Haider</p>
+        </div>
+    </div>
+</body>
+</html>"""
+
+    results_file = os.path.join(RESULTS_DIR, f'cve_report_{timestamp}.html')
     with open(results_file, 'w', encoding='utf-8') as f:
-        f.writelines(file_content)
+        f.write(html_content)
     
-    print(f"\n{Fore.CYAN}[+] Combined detailed report saved to: {results_file}{Style.RESET_ALL}")
+    print(f"\n{Fore.CYAN}[+] HTML Report saved to: {results_file}{Style.RESET_ALL}")
 
 
 # this is the main part of our script that runs first

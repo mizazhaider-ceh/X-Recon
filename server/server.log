@@ -1,0 +1,134 @@
+INFO:     Started server process [89142]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+>> Starting X-Recon Web Server on http://127.0.0.1:8000
+INFO:     127.0.0.1:39534 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39536 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39536 - "GET /static/css/main.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39534 - "GET /static/js/main.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39562 - "GET /static/css/layout.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39576 - "GET /static/css/buttons.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39550 - "GET /static/css/themes.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39536 - "GET /static/css/base.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39534 - "GET /static/css/variables.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39588 - "GET /static/css/forms.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39562 - "GET /static/css/cards.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39576 - "GET /static/css/dashboard.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39536 - "GET /static/css/ai-chat.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39534 - "GET /static/css/reports.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39550 - "GET /static/css/terminal.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39536 - "GET /static/css/components.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39562 - "GET /static/css/animations.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39588 - "GET /static/css/utilities.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39534 - "GET /static/js/router.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39550 - "GET /static/js/state.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39562 - "GET /static/js/components/Scanner.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39588 - "GET /static/js/components/Dashboard.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39576 - "GET /static/js/components/Settings.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39536 - "GET /static/js/components/AIChat.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39536 - "GET /static/js/api.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39534 - "GET /static/js/components/Reports.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39594 - "WebSocket /ws/terminal" [accepted]
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     connection open
+INFO:     connection closed
+WebSocket Client Disconnected: (<CloseCode.NO_STATUS_RCVD: 1005>, '')
+INFO:     127.0.0.1:39534 - "GET /api/reports HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39606 - "WebSocket /ws/terminal" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /reports/nmapscan_ahlesunnatpak.com_20260203_235658.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /reports/servicedetect_ahlesunnatpak.com_20260203_235509.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /reports/portscan_ahlesunnatpak.com_20260203_235506.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /reports/servicedetect_tesla.com_20260203_235424.html HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "DELETE /api/reports/nmapscan_ahlesunnatpak.com_20260203_235658.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "DELETE /api/reports/servicedetect_ahlesunnatpak.com_20260203_235509.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "DELETE /api/reports/portscan_ahlesunnatpak.com_20260203_235506.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "DELETE /api/reports/servicedetect_tesla.com_20260203_235424.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "DELETE /api/reports/portscan_tesla.com_20260203_235421.html HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34364 - "WebSocket /ws/terminal" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56156 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56160 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56160 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47176 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47176 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47176 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47176 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47326 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47326 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47326 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47326 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47326 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47778 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47790 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45028 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45028 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45042 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38278 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56986 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56986 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56986 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56986 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42288 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42288 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42288 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46514 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46530 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42326 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42326 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42326 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51690 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51690 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50110 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50126 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59190 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59190 - "GET /static/css/main.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59190 - "GET /static/css/variables.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59222 - "GET /static/css/forms.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59248 - "GET /static/css/buttons.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59230 - "GET /static/css/cards.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59248 - "GET /static/css/reports.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59246 - "GET /static/css/layout.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59206 - "GET /static/css/themes.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59190 - "GET /static/css/dashboard.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59230 - "GET /static/css/ai-chat.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59222 - "GET /static/css/terminal.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59246 - "GET /static/css/utilities.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59248 - "GET /static/css/animations.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59248 - "GET /static/js/state.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59246 - "GET /static/js/components/Dashboard.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59222 - "GET /static/js/components/AIChat.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59264 - "WebSocket /ws/terminal" [accepted]
+INFO:     127.0.0.1:59222 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     connection open
+INFO:     connection closed
+WebSocket Client Disconnected: (1001, '')
+INFO:     127.0.0.1:47022 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49130 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45596 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36266 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59124 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51070 - "GET /api/stats HTTP/1.1" 200 OK

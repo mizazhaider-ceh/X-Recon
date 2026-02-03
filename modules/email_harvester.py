@@ -107,7 +107,7 @@ async def scrape_url_for_emails(session, url, semaphore):
         return set()
 
 def print_and_save_results(target_domain, found_emails):
-    """filters the results, prints a clean list, and saves them."""
+    """filters the results, prints a clean list, and saves them as HTML."""
     final_emails = sorted([email for email in found_emails if email.endswith(f".{target_domain}")])
 
     if not final_emails:
@@ -116,25 +116,156 @@ def print_and_save_results(target_domain, found_emails):
 
     print(f"\n\n{Fore.GREEN}{Style.BRIGHT}✅ Search Complete! Found {len(final_emails)} unique email address(es) for {target_domain}.\n")
     
-    file_content = [f"--- Email Harvest Results for {target_domain} ---\n\n"]
+    from datetime import datetime
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    html_rows = ""
     for email in final_emails:
         print(f"{Fore.CYAN}{Style.BRIGHT}  [+] {email}{Style.RESET_ALL}")
-        file_content.append(f"{email}\n")
+        # Extract username and domain parts for display
+        parts = email.split('@')
+        html_rows += f"""
+            <tr>
+                <td><a href="mailto:{email}" style="color: #ffa502; text-decoration: none;">{email}</a></td>
+                <td>{parts[0] if len(parts) > 0 else ''}</td>
+                <td>@{parts[1] if len(parts) > 1 else ''}</td>
+            </tr>"""
 
-    results_file = os.path.join(RESULTS_DIR, f'emails_{target_domain}.txt')
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Harvest - {target_domain}</title>
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            padding: 2rem;
+            min-height: 100vh;
+        }}
+        .container {{
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }}
+        .header {{
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 2px solid #ffa502;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }}
+        .header-icon {{ font-size: 2.5rem; }}
+        h1 {{ color: #ffa502; font-size: 1.75rem; margin-bottom: 0.25rem; }}
+        .subtitle {{ color: #888; font-size: 0.9rem; }}
+        .meta {{
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }}
+        .badge {{
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 165, 2, 0.1);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }}
+        .badge-success {{ background: rgba(0, 255, 157, 0.1); border-color: rgba(0, 255, 157, 0.3); color: #00ff9d; }}
+        table {{ width: 100%; border-collapse: collapse; }}
+        th {{
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 165, 2, 0.1);
+            color: #ffa502;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }}
+        td {{ padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }}
+        tr:hover td {{ background: rgba(255, 255, 255, 0.02); }}
+        .footer {{
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-icon">📧</span>
+            <div>
+                <h1>Email Harvest Report</h1>
+                <div class="subtitle">Deep Web & Social Media Harvester</div>
+            </div>
+        </div>
+        
+        <div class="meta">
+            <div class="badge">🎯 Target: <strong>{target_domain}</strong></div>
+            <div class="badge badge-success">✓ Found: <strong>{len(final_emails)}</strong> emails</div>
+            <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Email Address</th>
+                    <th>Username</th>
+                    <th>Domain</th>
+                </tr>
+            </thead>
+            <tbody>
+                {html_rows}
+            </tbody>
+        </table>
+        
+        <div class="footer">
+            <p>Generated by <strong>X-Recon v3.0</strong> | Created by Muhammad Izaz Haider</p>
+        </div>
+    </div>
+</body>
+</html>"""
+
+    results_file = os.path.join(RESULTS_DIR, f'emails_{target_domain}_{timestamp}.html')
     with open(results_file, 'w', encoding='utf-8') as f:
-        f.writelines(file_content)
+        f.write(html_content)
     
-    print(f"\n{Fore.CYAN}[+] Results saved to: {results_file}{Style.RESET_ALL}")
+    print(f"\n{Fore.CYAN}[+] HTML Report saved to: {results_file}{Style.RESET_ALL}")
 
 async def main():
+    import sys
     os.makedirs(RESULTS_DIR, exist_ok=True)
     print_harvester_banner()
     
-    target_input = input(f"{Fore.CYAN}Enter the target domain (e.g., mit.edu): {Style.RESET_ALL}").strip()
+    target_input = ""
+    concurrency = 100
+    
+    if len(sys.argv) > 1:
+        target_input = sys.argv[1]
+        print(f"{Fore.CYAN}[info]Target received via CLI: {target_input}[/info]")
+        print("[dim]Running in automated mode (Speed: Fast)[/dim]")
+    else:
+        target_input = input(f"{Fore.CYAN}Enter the target domain (e.g., mit.edu): {Style.RESET_ALL}").strip()
+        
     if not target_input:
         print(f"{Fore.RED}[!] No domain entered. Exiting.{Style.RESET_ALL}"); return
-
+    
     target_domain = sanitize_domain(target_input)
     print(f"{Fore.GREEN}[i] Sanitized target to: {target_domain}{Style.RESET_ALL}")
     
@@ -158,15 +289,16 @@ async def main():
     print(f"{Fore.GREEN}[i] Stage 1 Complete. Gathered {len(urls_to_scrape)} unique URLs to scrape.{Style.RESET_ALL}")
 
     # --- stage 2: scrape urls with threads ---
-    print("\n---[ Scrape Speed (Async) ]---")
-    print("[1] Normal (50 concurrent requests)")
-    print("[2] Fast (100 concurrent requests)")
-    print("[3] Aggressive (200 concurrent requests)")
-    speed_choice = input(f"{Fore.CYAN}Select an option: {Style.RESET_ALL}").strip()
-    
-    concurrency = 50
-    if speed_choice == '2': concurrency = 100
-    elif speed_choice == '3': concurrency = 200
+    if len(sys.argv) == 1:
+        print("\n---[ Scrape Speed (Async) ]---")
+        print("[1] Normal (50 concurrent requests)")
+        print("[2] Fast (100 concurrent requests)")
+        print("[3] Aggressive (200 concurrent requests)")
+        speed_choice = input(f"{Fore.CYAN}Select an option: {Style.RESET_ALL}").strip()
+        
+        concurrency = 50
+        if speed_choice == '2': concurrency = 100
+        elif speed_choice == '3': concurrency = 200
 
     all_found_emails = set()
     print(f"\n{Fore.CYAN}{Style.BRIGHT}[*] Stage 2: Scraping {len(urls_to_scrape)} URLs with concurrency {concurrency}...{Style.RESET_ALL}")

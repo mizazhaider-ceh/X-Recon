@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Recon // Terminal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #00ff9d;
+            font-family: 'JetBrains Mono', monospace;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            border-bottom: 2px solid #00ff9d;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 255, 157, 0.2);
+        }
+
+        .terminal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: #00ff9d;
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+            letter-spacing: 0.1em;
+        }
+
+        .terminal-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff9d;
+            box-shadow: 0 0 10px #00ff9d;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .terminal-body {
+            flex: 1;
+            background: #000;
+            padding: 1.5rem;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            padding: 0.3rem 0.5rem;
+            border-left: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .terminal-line:hover {
+            background: rgba(0, 255, 157, 0.05);
+            border-left-color: #00ff9d;
+        }
+
+        .terminal-line.system {
+            color: #00f3ff;
+            font-weight: 600;
+        }
+
+        .terminal-line.success {
+            color: #00ff9d;
+        }
+
+        .terminal-line.error {
+            color: #ff0055;
+            background: rgba(255, 0, 85, 0.05);
+            border-left-color: #ff0055;
+        }
+
+        .terminal-line.warning {
+            color: #ffaa00;
+        }
+
+        .terminal-line.info {
+            color: #888;
+        }
+
+        .timestamp {
+            color: #555;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+
+        .terminal-footer {
+            background: #0a0a0a;
+            border-top: 1px solid #333;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .footer-info {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-label {
+            color: #888;
+        }
+
+        .footer-value {
+            color: #00ff9d;
+            font-weight: 600;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff9d;
+        }
+
+        /* Loading animation */
+        .loading-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff9d;
+            margin-left: 0.5rem;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="terminal-header">
+        <div class="terminal-title">⚡ X-RECON TERMINAL</div>
+        <div class="terminal-status">
+            <span class="status-dot"></span>
+            <span id="status-text">CONNECTED</span>
+        </div>
+    </div>
+
+    <div class="terminal-body" id="terminal-output">
+        <div class="terminal-line system">
+            <span class="timestamp">[INIT]</span>
+            X-Recon Terminal Initialized. Waiting for commands...
+        </div>
+    </div>
+
+    <div class="terminal-footer">
+        <div class="footer-info">
+            <div class="footer-item">
+                <span class="footer-label">Target:</span>
+                <span class="footer-value" id="footer-target">N/A</span>
+            </div>
+            <div class="footer-item">
+                <span class="footer-label">Modules:</span>
+                <span class="footer-value" id="footer-modules">N/A</span>
+            </div>
+        </div>
+        <div class="footer-item">
+            <span class="footer-label">Status:</span>
+            <span class="footer-value" id="footer-status">READY</span>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const target = params.get('target') || 'unknown';
+        const modules = params.get('modules') || '';
+
+        // Update footer
+        document.getElementById('footer-target').innerText = target;
+        document.getElementById('footer-modules').innerText = modules || 'default';
+
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/ws/terminal`;
+        const socket = new WebSocket(wsUrl);
+
+        const output = document.getElementById('terminal-output');
+        const statusText = document.getElementById('status-text');
+        const footerStatus = document.getElementById('footer-status');
+
+        function addLine(message, type = 'info') {
+            const line = document.createElement('div');
+            line.className = `terminal-line ${type}`;
+
+            const timestamp = new Date().toLocaleTimeString();
+            line.innerHTML = `<span class="timestamp">[${timestamp}]</span>${message}`;
+
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        socket.onopen = () => {
+            statusText.innerText = 'CONNECTED';
+            footerStatus.innerText = 'SCANNING';
+            addLine('WebSocket connection established.', 'system');
+
+            // Send scan command
+            const command = modules ? `start_scan:${target}|${modules}` : `start_scan:${target}`;
+            socket.send(command);
+            addLine(`Initiating scan on target: <strong>${target}</strong>`, 'system');
+            if (modules) {
+                addLine(`Modules: <strong>${modules}</strong>`, 'system');
+            }
+        };
+
+        socket.onmessage = (event) => {
+            const msg = event.data;
+
+            // Classify message type
+            let type = 'info';
+            if (msg.includes('[ERROR]') || msg.includes('Error') || msg.includes('STDERR')) {
+                type = 'error';
+            } else if (msg.includes('>>') || msg.includes('EXEC') || msg.includes('Launching')) {
+                type = 'system';
+            } else if (msg.includes('Finished') || msg.includes('Completed') || msg.includes('SUCCESS')) {
+                type = 'success';
+            } else if (msg.includes('WARNING') || msg.includes('WARN')) {
+                type = 'warning';
+            }
+
+            addLine(msg, type);
+        };
+
+        socket.onclose = () => {
+            statusText.innerText = 'DISCONNECTED';
+            footerStatus.innerText = 'COMPLETE';
+            addLine('Connection closed. Scan complete.', 'system');
+        };
+
+        socket.onerror = (error) => {
+            statusText.innerText = 'ERROR';
+            footerStatus.innerText = 'FAILED';
+            addLine('WebSocket error occurred.', 'error');
+        };
+    </script>
+</body>
+
+</html>

@@ -65,7 +65,7 @@ async def resolve_subdomain(resolver, subdomain, semaphore):
             return subdomain, False, None
 
 def print_and_save_results(target_domain, found_subdomains):
-    """prints a beautiful summary table and saves the results."""
+    """prints a beautiful summary table and saves the results as HTML."""
     if not found_subdomains:
         print(f"\n{Fore.YELLOW}[-] Scan Complete. No active subdomains found.{Style.RESET_ALL}")
         return
@@ -75,49 +75,170 @@ def print_and_save_results(target_domain, found_subdomains):
     print(f"{Style.BRIGHT}{Fore.WHITE}{'SUBDOMAIN':<40}{'IP ADDRESS'}{Style.RESET_ALL}")
     print(f"{Fore.WHITE}{'---------':<40}{'----------'}{Style.RESET_ALL}")
 
-    file_content = [f"--- Subdomain Scan Results for {target_domain} ---\n\n"]
+    from datetime import datetime
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     
+    html_rows = ""
     for subdomain, ip in sorted(found_subdomains):
         print(f"{Fore.GREEN}{subdomain:<40}{Fore.YELLOW}{ip}{Style.RESET_ALL}")
-        file_content.append(f"{subdomain:<40} -> {ip}\n")
+        html_rows += f"""
+            <tr>
+                <td><a href="http://{subdomain}" target="_blank" style="color: #00f3ff; text-decoration: none;">{subdomain}</a></td>
+                <td><code>{ip}</code></td>
+            </tr>"""
 
-    results_file = os.path.join(RESULTS_DIR, f'subdomains_{target_domain}.txt')
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subdomain Scan - {target_domain}</title>
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            padding: 2rem;
+            min-height: 100vh;
+        }}
+        .container {{
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 119, 255, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }}
+        .header {{
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 2px solid #0077ff;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }}
+        .header-icon {{ font-size: 2.5rem; }}
+        h1 {{ color: #0077ff; font-size: 1.75rem; margin-bottom: 0.25rem; }}
+        .subtitle {{ color: #888; font-size: 0.9rem; }}
+        .meta {{
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }}
+        .badge {{
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 119, 255, 0.1);
+            border: 1px solid rgba(0, 119, 255, 0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }}
+        .badge-success {{ background: rgba(0, 255, 157, 0.1); border-color: rgba(0, 255, 157, 0.3); color: #00ff9d; }}
+        table {{ width: 100%; border-collapse: collapse; }}
+        th {{
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 119, 255, 0.1);
+            color: #0077ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }}
+        td {{ padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }}
+        tr:hover td {{ background: rgba(255, 255, 255, 0.02); }}
+        code {{
+            background: rgba(0, 255, 157, 0.1);
+            color: #00ff9d;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+        }}
+        .footer {{
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-icon">🌐</span>
+            <div>
+                <h1>Subdomain Scan Report</h1>
+                <div class="subtitle">AsyncIO Multi-Threaded Discovery</div>
+            </div>
+        </div>
+        
+        <div class="meta">
+            <div class="badge">🎯 Target: <strong>{target_domain}</strong></div>
+            <div class="badge badge-success">✓ Found: <strong>{len(found_subdomains)}</strong> subdomains</div>
+            <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Subdomain</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {html_rows}
+            </tbody>
+        </table>
+        
+        <div class="footer">
+            <p>Generated by <strong>X-Recon v3.0</strong> | Created by Muhammad Izaz Haider</p>
+        </div>
+    </div>
+</body>
+</html>"""
+
+    results_file = os.path.join(RESULTS_DIR, f'subdomains_{target_domain}_{timestamp}.html')
     with open(results_file, 'w', encoding='utf-8') as f:
-        f.writelines(file_content)
+        f.write(html_content)
     
-    print(f"\n{Fore.CYAN}[+] Results saved to: {results_file}{Style.RESET_ALL}")
+    print(f"\n{Fore.CYAN}[+] HTML Report saved to: {results_file}{Style.RESET_ALL}")
 
 async def main():
+    import sys
     os.makedirs(RESULTS_DIR, exist_ok=True)
     print_subdomain_banner()
     
-    target_input = input(f"{Fore.CYAN}Enter the target domain (e.g., tesla.com): {Style.RESET_ALL}").strip()
+    target_input = ""
+    concurrency = 500 # Default for CLI
+    
+    if len(sys.argv) > 1:
+        target_input = sys.argv[1]
+        print(f"{Fore.CYAN}[info]Target received via CLI: {target_input}[/info]")
+        print("[dim]Running in automated mode (Speed: Fast)[/dim]")
+    else:
+        target_input = input(f"{Fore.CYAN}Enter the target domain (e.g., tesla.com): {Style.RESET_ALL}").strip()
+        print("\n---[ Scan Speed (Async - Huge Concurrency) ]---")
+        print("[1] Normal (50 concurrent queries)")
+        print("[2] Fast (500 concurrent queries)")
+        print("[3] Insane (1000 concurrent queries)")
+        speed_choice = input(f"{Fore.CYAN}Select an option: {Style.RESET_ALL}").strip()
+        
+        concurrency = 50
+        if speed_choice == '2': concurrency = 500
+        elif speed_choice == '3': concurrency = 1000
 
     if not target_input:
         print(f"{Fore.RED}[!] No domain entered. Exiting.{Style.RESET_ALL}"); return
 
-    # --- THIS IS THE NEW, SMART PART ---
-    target_domain = sanitize_domain(target_input)
-    print(f"{Fore.GREEN}[i] Sanitized target to: {target_domain}{Style.RESET_ALL}")
-    # --- END OF NEW PART ---
-
-    try:
-        with open(WORDLIST_PATH, 'r') as f:
-            subdomains_to_check = [f"{line.strip()}.{target_domain}" for line in f if line.strip()]
-        print(f"{Fore.GREEN}[i] Successfully loaded {len(subdomains_to_check)} subdomains from wordlist.{Style.RESET_ALL}")
-    except FileNotFoundError:
-        print(f"{Fore.RED}[!] Wordlist not found at '{WORDLIST_PATH}'. Exiting.{Style.RESET_ALL}"); return
-
-    print("\n---[ Scan Speed (Async - Huge Concurrency) ]---")
-    print("[1] Normal (50 concurrent queries)")
-    print("[2] Fast (500 concurrent queries)")
-    print("[3] Insane (1000 concurrent queries)")
-    speed_choice = input(f"{Fore.CYAN}Select an option: {Style.RESET_ALL}").strip()
+    target_domain = target_input
     
-    concurrency = 50
-    if speed_choice == '2': concurrency = 500
-    elif speed_choice == '3': concurrency = 1000
-
     print(f"\n{Fore.CYAN}{Style.BRIGHT}[*] Starting scan for {target_domain} with concurrency level {concurrency}...{Style.RESET_ALL}")
     
     # Initialize aiodns Resolver

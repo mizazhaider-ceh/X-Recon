@@ -77,6 +77,10 @@ def print_and_save(target_host, target_ip, open_ports):
     console.print(f"[highlight]{'PORT':<10}{'STATUS':<10}{'BANNER'}[/highlight]")
     console.print(f"[white]{'-'*4:<10}{'-'*6:<10}{'-'*20}[/white]")
     
+        
+    # JSON Data for HTML
+    html_content = "<table><thead><tr><th>PORT</th><th>STATUS</th><th>BANNER/SERVICE</th></tr></thead><tbody>"
+    
     file_lines = [f"--- Async Port Scan Results for {target_host} ({target_ip}) ---\n\n"]
     
     for port, banner in open_ports:
@@ -84,34 +88,56 @@ def print_and_save(target_host, target_ip, open_ports):
         console.print(f"[green]{port:<10}[/green][green]OPEN      [/green][yellow]{svc_str}[/yellow]")
         file_lines.append(f"Port: {port} | Status: OPEN | Banner: {svc_str}\n")
         
-    # Save using centralized saver
-    filepath = saver.save_text(target_host, file_lines)
-    if filepath:
-        console.print(f"\n[info][+] Results saved to: {filepath}[/info]")
+        # Add to HTML
+        html_content += f"<tr><td>{port}</td><td><span style='color:#0aff0a'>OPEN</span></td><td>{svc_str}</td></tr>"
+        
+    html_content += "</tbody></table>"
+
+    # Save Text (CLI Backup)
+    saver.save_text(target_host, file_lines)
+    
+    # Save HTML (Web Report)
+    html_path = saver.save_html(target_host, f"Port Scan: {target_host}", html_content)
+    
+    if html_path:
+        console.print(f"\n[info][+] HTML Report saved to: {html_path}[/info]")
 
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')
     RichConsole.print_banner("Async Port Scanner v1.1")
     
-    target_input = console.input("[info]Enter target IP or Domain: [/info]").strip()
+    import sys
+    target_input = ""
+    choice = '1' # Default to Top 100
+    spd = '2'    # Default to Fast
+    
+    # Check if arguments are provided (Non-Interactive Mode)
+    if len(sys.argv) > 1:
+        target_input = sys.argv[1]
+        console.print(f"[info]Target received via CLI: {target_input}[/info]")
+        console.print("[dim]Running in automated mode (Profile: Top 100, Speed: Fast)[/dim]")
+    else:
+        # Interactive Mode
+        target_input = console.input("[info]Enter target IP or Domain: [/info]").strip()
     
     # Resolve IP
     try:
         target_ip = socket.gethostbyname(target_input)
         console.print(f"[success][i] Resolved to: {target_ip}[/success]")
     except socket.gaierror:
-        console.print(f"[error][!] Could not resolve hostname.[/error]")
+        console.print(f"[error][!] Could not resolve hostname '{target_input}'.[/error]")
         return
 
-    # Port selection
-    console.print("\n[header]---[ Scan Profile ]---[/header]")
-    console.print("1. Top 100 Common Ports")
-    console.print("2. Full Range (1-65535)")
-    console.print("3. Custom Range")
-    
-    choice = console.input("[info]Select profile: [/info]").strip()
+    # Port selection (Only ask if interactive)
     ports_to_scan = []
     
+    if len(sys.argv) <= 1:
+        console.print("\n[header]---[ Scan Profile ]---[/header]")
+        console.print("1. Top 100 Common Ports")
+        console.print("2. Full Range (1-65535)")
+        console.print("3. Custom Range")
+        choice = console.input("[info]Select profile: [/info]").strip()
+
     if choice == '1':
         # Mix of common TCP ports
         ports_to_scan = [21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445, 993, 1433, 3306, 3389, 5432, 5900, 8080, 8443] + list(range(8081, 8100))
@@ -128,14 +154,15 @@ def main():
     else:
         return
 
-    # Speed / Concurrency
-    console.print("\n[header]---[ Concurrency Level ]---[/header]")
-    console.print("1. Safe (100)")
-    console.print("2. Fast (500) [Default]")
-    console.print("3. Aggressive (2000)")
-    
-    spd = console.input("[info]Select speed: [/info]").strip()
+    # Speed / Concurrency (Only ask if interactive)
     concurrency = 500
+    if len(sys.argv) <= 1:
+        console.print("\n[header]---[ Concurrency Level ]---[/header]")
+        console.print("1. Safe (100)")
+        console.print("2. Fast (500) [Default]")
+        console.print("3. Aggressive (2000)")
+        spd = console.input("[info]Select speed: [/info]").strip()
+        
     if spd == '1': concurrency = 100
     elif spd == '3': concurrency = 2000
     
