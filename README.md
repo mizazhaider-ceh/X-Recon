@@ -30,11 +30,16 @@
 
 ## 🎯 What is X-Recon?
 
+<div align="center">
+
 **X-Recon** is an all-in-one cybersecurity reconnaissance toolkit designed for security professionals, penetration testers, and bug bounty hunters. It combines powerful scanning modules with an AI assistant and a sleek cyberpunk-themed web interface.
 
+</div>
+
+<div align="center">
 <table>
 <tr>
-<td>
+<td align="center" width="50%">
 
 ### 🔥 The Evolution
 
@@ -45,22 +50,25 @@ v3.0 → CLI + AI + Web Dashboard ← You are here!
 ```
 
 </td>
-<td>
+<td align="center" width="50%">
 
 ### 💡 Why X-Recon?
 
-- 🚀 **All-in-One** - No switching between tools
-- 🤖 **AI-Powered** - Smart analysis & suggestions
-- 🌐 **Web Interface** - Modern, real-time dashboard
-- ⚡ **Async** - Blazing fast scans
+🚀 **All-in-One** - No switching between tools<br>
+🤖 **AI-Powered** - Smart analysis & suggestions<br>
+🌐 **Web Interface** - Modern, real-time dashboard<br>
+⚡ **Async** - Blazing fast scans
 
 </td>
 </tr>
 </table>
+</div>
 
 ---
 
 ## 🚀 Quick Start
+
+<div align="center">
 
 ```bash
 # Clone the repository
@@ -78,6 +86,8 @@ python main.py
 ```
 
 > 💡 Select **Option 1** → Opens web dashboard at `http://127.0.0.1:8000`
+
+</div>
 
 <details>
 <summary><b>⚡ One-Liner for Windows</b></summary>
@@ -122,35 +132,43 @@ X-Recon/
 
 ## ✨ Features
 
+<div align="center">
 <table>
 <tr>
-<td width="50%">
+<td align="left" valign="top" width="50%">
 
 ### 🌐 Web Dashboard
-- **Real-time Terminal** - Live scan output via WebSocket
-- **Scan Controls** - Start, stop, monitor scans
-- **Command Input** - Enter terminal commands directly
-- **Session Persistence** - Preserves history on refresh
-- **Responsive Design** - Works on all devices
+
+✅ **Real-time Terminal** - Live scan output via WebSocket<br>
+✅ **Scan Controls** - Start, stop, monitor scans<br>
+✅ **Command Input** - Enter terminal commands directly<br>
+✅ **Session Persistence** - Preserves history on refresh<br>
+✅ **Responsive Design** - Works on all devices
 
 </td>
-<td width="50%">
+<td align="left" valign="top" width="50%">
 
 ### 🤖 AI Assistant (X-AI)
-- **Powered by Cerebras** - Llama 3.3 70B model
-- **Context-Aware** - Knows X-Recon toolkit
-- **Syntax Highlighting** - Beautiful code blocks
-- **Quick Actions** - One-click common queries
-- **Export Chats** - Download conversations
+
+✅ **Powered by Cerebras** - Llama 3.3 70B model<br>
+✅ **Context-Aware** - Knows X-Recon toolkit<br>
+✅ **Syntax Highlighting** - Beautiful code blocks<br>
+✅ **Quick Actions** - One-click common queries<br>
+✅ **Export Chats** - Download conversations
 
 </td>
 </tr>
 </table>
+</div>
+
+<br>
 
 ### 🔍 Reconnaissance Modules
 
+<div align="center">
+
 | Module | Description | Speed |
-|--------|-------------|-------|
+|:------:|:-----------:|:-----:|
 | 🚀 **Port Scanner** | Async TCP port scanning | ⚡ 1000+ ports/sec |
 | 🌐 **Subdomain Scanner** | DNS enumeration | ⚡ 500 concurrent |
 | 📁 **Directory Bruteforcer** | Web path fuzzing | ⚡ 200 concurrent |
@@ -160,18 +178,26 @@ X-Recon/
 | 🧬 **DNS Scanner** | WHOIS & DNS intel | 📋 Full records |
 | 🔧 **Nmap Integration** | Advanced OS detection | 🔬 Deep scan |
 
+</div>
+
 ---
 
 ## 📸 Screenshots
 
+<div align="center">
+
 ### 🖥️ CLI Interface
+
+</div>
 
 <details>
 <summary><b>💻 Main Menu - Command Center</b></summary>
-
 <br>
+<div align="center">
 
 ![CLI Main Menu](screenshots/cli-main-menu.png)
+
+</div>
 
 **Features:**
 - ASCII art banner with creator info
@@ -183,10 +209,12 @@ X-Recon/
 
 <details>
 <summary><b>🔍 Scanning in Action</b></summary>
-
 <br>
+<div align="center">
 
 ![CLI Scanning](screenshots/cli-scanning.png)
+
+</div>
 
 **Features:**
 - Real-time scan output
@@ -196,16 +224,20 @@ X-Recon/
 
 </details>
 
----
+<div align="center">
 
 ### 🌐 Web Dashboard
 
+</div>
+
 <details>
 <summary><b>📊 Dashboard - Command Center</b></summary>
-
 <br>
+<div align="center">
 
 ![Web Dashboard](screenshots/web-dashboard.png)
+
+</div>
 
 **Features:**
 - Quick scan with module selection
@@ -217,10 +249,12 @@ X-Recon/
 
 <details>
 <summary><b>🎯 Scanner - Multi-Module</b></summary>
-
 <br>
+<div align="center">
 
 ![Web Scanner](screenshots/web-scanner.png)
+
+</div>
 
 **Features:**
 - Target configuration
@@ -232,10 +266,12 @@ X-Recon/
 
 <details>
 <summary><b>🤖 AI Assistant - X-AI</b></summary>
-
 <br>
+<div align="center">
 
 ![Web AI Chat](screenshots/web-ai-chat.png)
+
+</div>
 
 **Features:**
 - Cybersecurity Q&A
@@ -248,10 +284,12 @@ X-Recon/
 
 <details>
 <summary><b>📋 Reports - Professional Output</b></summary>
-
 <br>
+<div align="center">
 
 ![Web Reports](screenshots/web-reports.png)
+
+</div>
 
 **Features:**
 - HTML report viewer
@@ -438,11 +476,15 @@ MIT License - See LICENSE file for details
 
 ### 📍 The Journey
 
+<div align="center">
+
 | Phase | What I Built | Why |
-|-------|-------------|-----|
+|:-----:|:------------:|:---:|
 | **v1.0** | CLI scanning modules | Learn by building |
 | **v2.0** | Added AI assistant | Smart analysis needed |
 | **v3.0** | Full web dashboard | Professional workflow |
+
+</div>
 
 ### 💡 Philosophy
 
