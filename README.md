@@ -68,7 +68,7 @@ v3.0 → CLI + AI + Web Dashboard ← You are here!
 
 ## 🚀 Quick Start
 
-<div align="center">
+
 
 ```bash
 # Clone the repository
@@ -87,7 +87,7 @@ python main.py
 
 > 💡 Select **Option 1** → Opens web dashboard at `http://127.0.0.1:8000`
 
-</div>
+
 
 <details>
 <summary><b>⚡ One-Liner for Windows</b></summary>
