@@ -412,9 +412,6 @@ MIT License - See LICENSE file for details
 
 ---
 
-🇵🇰 → 🇧🇪 *From a small Pakistani village to Belgium's cybersecurity field*
-
-*Built on self-learning, persistence, and faith — Alhamdulillah* 🤲
 
 ---
 
@@ -425,20 +422,6 @@ MIT License - See LICENSE file for details
 
 </div>
 
-### 🏆 Recognition & Achievements
-
-- 🌟 **"The Next-Gen Technologist from Pakistan"** — PakSphere
-- 🌟 **"Rising Star"** — Ek Pakistan  
-- 📺 **Featured on ABN News** — National television appearance
-- 🎓 **16.40/20 CGPA** — First semester at Howest University
-- 🔐 **Found 13 vulnerabilities** — Including critical RCE & SQLi fixes
-
-### 💼 What I Do
-
-- 🔐 Hardening CI/CD pipelines & Kubernetes containers
-- 🤖 Building LLM-powered vulnerability scanners
-- 🛡️ Penetration testing & security audits
-- 🌍 Securing multi-region cloud infrastructure
 
 ---
 
@@ -457,16 +440,6 @@ I'm always open to collaboration! Whether you want to:
 **Reach out on [LinkedIn](https://www.linkedin.com/in/muhammad-izaz-haider-091639314/) — Let's build the future of security together!**
 
 </div>
-
----
-
-## 🙏 Acknowledgments
-
-- **Allah Almighty** — Every achievement is by His grace 🤲
-- **Cerebras** — Lightning-fast AI inference
-- **FastAPI** — Modern Python web framework
-- **The Security Community** — Inspiration & feedback
-- **My Family** — Unwavering support from Pakistan to Belgium
 
 ---
 
