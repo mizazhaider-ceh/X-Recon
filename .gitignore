@@ -1,0 +1,27 @@
+# Security: Secrets & Environment
+.env
+.env.local
+config_override.py
+
+# Python: Bytecode & Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Dependencies
+venv/
+env/
+.venv/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Project Data (Optional: Prevent large scan results from uploading)
+# Comment these out if you WANT to save results to GitHub
+results/
+data/results/
+logs/

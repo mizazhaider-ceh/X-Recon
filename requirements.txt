@@ -1,0 +1,12 @@
+requests
+beautifulsoup4
+dnspython
+python-whois
+rich
+colorama
+tqdm
+python-nmap
+cerebras_cloud_sdk
+aiohttp
+aiodns
+python-dotenv
