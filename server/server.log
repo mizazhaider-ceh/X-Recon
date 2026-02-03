@@ -31,3 +31,5 @@ INFO:     127.0.0.1:60226 - "GET /api/stats HTTP/1.1" 200 OK
 INFO:     127.0.0.1:60226 - "GET /api/stats HTTP/1.1" 200 OK
 INFO:     127.0.0.1:57136 - "GET /api/stats HTTP/1.1" 200 OK
 INFO:     127.0.0.1:60258 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60258 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60258 - "GET /api/stats HTTP/1.1" 200 OK
