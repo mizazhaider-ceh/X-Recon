@@ -8,6 +8,7 @@ import sys
 MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(MODULE_DIR)
 sys.path.append(PROJECT_DIR)
+sys.path.append(os.path.join(PROJECT_DIR, 'server'))
 
 try:
     import config
