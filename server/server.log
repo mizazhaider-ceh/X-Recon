@@ -55,3 +55,18 @@ INFO:     127.0.0.1:39270 - "GET /api/stats HTTP/1.1" 200 OK
 INFO:     127.0.0.1:39270 - "GET /api/stats HTTP/1.1" 200 OK
 INFO:     127.0.0.1:50506 - "GET /api/stats HTTP/1.1" 200 OK
 INFO:     127.0.0.1:50506 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46138 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54478 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48902 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42116 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     connection closed
+INFO:     connection closed
+AI WebSocket Error: (<CloseCode.ABNORMAL_CLOSURE: 1006>, '')
+WebSocket Client Disconnected: (<CloseCode.ABNORMAL_CLOSURE: 1006>, '')
+INFO:     127.0.0.1:52774 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49266 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49266 - "GET /api/stats HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [89636]

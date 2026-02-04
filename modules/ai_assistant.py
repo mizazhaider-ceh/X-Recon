@@ -108,9 +108,34 @@ def run_ai_assistant():
     """The main function to run the interactive chat session."""
     api_key = getattr(config, 'CEREBRAS_API_KEY', None)
     
-    if not api_key or "YOUR_CEREBRAS_API_KEY" in api_key:
-        console.print("\n[bold red][!] Cerebras API Key missing or invalid.[/bold red]")
-        console.print("[yellow]Please update config.py with your key from https://cloud.cerebras.ai/[/yellow]")
+    if not api_key or "YOUR_CEREBRAS_API_KEY" in api_key or api_key == "your_api_key_here":
+        console.print("\n[bold red]╔════════════════════════════════════════════════════════╗[/bold red]")
+        console.print("[bold red]║  ❌ Cerebras API Key Not Configured                   ║[/bold red]")
+        console.print("[bold red]╚════════════════════════════════════════════════════════╝[/bold red]\n")
+        
+        console.print("[bold yellow]🚀 Quick Setup (Takes 2 minutes!):[/bold yellow]\n")
+        console.print("[white]1. Run: [bold cyan]python setup_ai.py[/bold cyan][/white]")
+        console.print("[white]   OR[/white]")
+        console.print("[white]2. Get FREE API key from: [bold cyan]https://cloud.cerebras.ai/[/bold cyan][/white]")
+        console.print("[white]3. Create [bold].env[/bold] file in project root[/white]")
+        console.print("[white]4. Add: [bold]CEREBRAS_API_KEY=your_key_here[/bold][/white]\n")
+        
+        console.print("[bold green]💡 Why Cerebras?[/bold green]")
+        console.print("[white]   • 100% FREE (no credit card)[/white]")
+        console.print("[white]   • Llama 3.3 70B - Best AI for cybersecurity[/white]")
+        console.print("[white]   • Lightning fast responses[/white]\n")
+        
+        # Ask if user wants to open browser
+        try:
+            from colorama import Fore, Style
+            response = input(f"{Fore.CYAN}Would you like to open the setup page now? (y/n): {Style.RESET_ALL}").lower()
+            if response == 'y':
+                import webbrowser
+                webbrowser.open('https://cloud.cerebras.ai/')
+                console.print(f"\n[bold green]✅ Opening browser... Follow the steps above to get your key![/bold green]\n")
+        except:
+            pass
+        
         return
 
     try:
