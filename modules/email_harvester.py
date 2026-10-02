@@ -3,6 +3,7 @@
 # High-speed asynchronous scraping.
 
 import asyncio
+import html as _html
 import aiohttp
 from bs4 import BeautifulSoup
 import re
@@ -119,6 +120,8 @@ def print_and_save_results(target_domain, found_emails):
     from datetime import datetime
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     
+    esc_target = _html.escape(target_domain, quote=True)
+    safe_target = re.sub(r"[^\w.\-]", "_", target_domain)
     html_rows = ""
     for email in final_emails:
         print(f"{Fore.CYAN}{Style.BRIGHT}  [+] {email}{Style.RESET_ALL}")
@@ -136,7 +139,7 @@ def print_and_save_results(target_domain, found_emails):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Harvest - {target_domain}</title>
+    <title>Email Harvest - {esc_target}</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -217,7 +220,7 @@ def print_and_save_results(target_domain, found_emails):
         </div>
         
         <div class="meta">
-            <div class="badge">🎯 Target: <strong>{target_domain}</strong></div>
+            <div class="badge">🎯 Target: <strong>{esc_target}</strong></div>
             <div class="badge badge-success">✓ Found: <strong>{len(final_emails)}</strong> emails</div>
             <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
         </div>
@@ -242,7 +245,7 @@ def print_and_save_results(target_domain, found_emails):
 </body>
 </html>"""
 
-    results_file = os.path.join(RESULTS_DIR, f'emails_{target_domain}_{timestamp}.html')
+    results_file = os.path.join(RESULTS_DIR, f'emails_{safe_target}_{timestamp}.html')
     with open(results_file, 'w', encoding='utf-8') as f:
         f.write(html_content)
     

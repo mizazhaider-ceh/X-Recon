@@ -3,6 +3,8 @@
 # Non-blocking, ultra-fast service detection and banner grabbing.
 
 import asyncio
+import html as _html
+import re
 from colorama import init, Fore, Style
 from tqdm.asyncio import tqdm
 import os
@@ -104,9 +106,11 @@ def print_and_save_results(target_host, open_ports_info):
     html_rows = ""
     
     # sort the results by port number before printing for a clean report
+    esc_target = _html.escape(target_host, quote=True)
+    safe_target = re.sub(r"[^\w.\-]", "_", target_host)
     for port, banner in sorted(open_ports_info):
         # Clean up banner for display (remove newlines)
-        clean_banner = banner.replace('\n', ' ').replace('\r', '')[:80] 
+        clean_banner = _html.escape(banner.replace('\n', ' ').replace('\r', '')[:80], quote=True)
         print(f"{Fore.GREEN}{port:<10}{'OPEN':<10}{Fore.YELLOW}{clean_banner}{Style.RESET_ALL}")
         html_rows += f"""
             <tr>
@@ -123,7 +127,7 @@ def print_and_save_results(target_host, open_ports_info):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Detection - {target_host}</title>
+    <title>Service Detection - {esc_target}</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -215,7 +219,7 @@ def print_and_save_results(target_host, open_ports_info):
         </div>
         
         <div class="meta">
-            <div class="badge">🎯 Target: <strong>{target_host}</strong></div>
+            <div class="badge">🎯 Target: <strong>{esc_target}</strong></div>
             <div class="badge badge-success">✓ Services Found: <strong>{len(open_ports_info)}</strong></div>
             <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
         </div>
@@ -241,7 +245,7 @@ def print_and_save_results(target_host, open_ports_info):
 </html>"""
 
     # Save HTML file
-    results_file = os.path.join(RESULTS_DIR, f'servicedetect_{target_host}_{timestamp}.html')
+    results_file = os.path.join(RESULTS_DIR, f'servicedetect_{safe_target}_{timestamp}.html')
     with open(results_file, 'w', encoding='utf-8') as f:
         f.write(html_content)
     

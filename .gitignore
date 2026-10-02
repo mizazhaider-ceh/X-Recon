@@ -25,3 +25,7 @@ Thumbs.db
 results/
 data/results/
 logs/
+
+# Server runtime files
+server/server.log
+server/.server.pid

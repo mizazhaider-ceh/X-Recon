@@ -1,4 +1,5 @@
 # modules/utils.py
+import html as _html
 import re
 import os
 import json
@@ -6,6 +7,18 @@ from datetime import datetime
 from rich.console import Console
 from rich.theme import Theme
 from rich.panel import Panel
+
+
+def _esc(text) -> str:
+    """Escape untrusted strings for safe HTML embedding."""
+    if text is None:
+        return ""
+    return _html.escape(str(text), quote=True)
+
+
+def _safe_filename(value: str) -> str:
+    """Strip characters that are unsafe in a filename."""
+    return re.sub(r"[^\w.\-]", "_", str(value))
 
 # --- Centralized UI ---
 class RichConsole:
@@ -67,8 +80,9 @@ class ResultSaver:
         self.module_name = module_name
 
     def save_text(self, identifier, content_lines):
-        """Save results as HTML report"""
-        filename = f"{self.module_name}_{identifier}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+        """Save results as an HTML report (content is HTML-escaped)."""
+        safe_id = _safe_filename(identifier)
+        filename = f"{self.module_name}_{safe_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
         filepath = os.path.join(self.results_dir, filename)
         try:
             # Convert text content to HTML
@@ -81,21 +95,21 @@ class ResultSaver:
             return None
     
     def _generate_html_report(self, identifier, content_lines):
-        """Generate professional HTML report"""
+        """Generate professional HTML report (all untrusted data escaped)."""
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
-        # Convert content lines to HTML
+        # Convert content lines to HTML (escaped: banners/DNS data are untrusted)
         if isinstance(content_lines, list):
-            content_html = '<br>'.join(str(line).strip() for line in content_lines)
+            content_html = '<br>'.join(_esc(line).strip() for line in content_lines)
         else:
-            content_html = str(content_lines).replace('\n', '<br>')
+            content_html = _esc(content_lines).replace('\n', '<br>')
         
         html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{self.module_name} - {identifier}</title>
+    <title>{_esc(self.module_name)} - {_esc(identifier)}</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -159,9 +173,9 @@ class ResultSaver:
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 {self.module_name.replace('_', ' ').title()}</h1>
+            <h1>🔍 {_esc(self.module_name.replace('_', ' ').title())}</h1>
             <div class="meta">
-                <span class="badge">Target: {identifier}</span>
+                <span class="badge">Target: {_esc(identifier)}</span>
                 <span class="badge">Generated: {timestamp}</span>
                 <span class="badge">X-Recon v3.0</span>
             </div>
@@ -178,7 +192,8 @@ class ResultSaver:
         return html
 
     def save_json(self, identifier, data_dict):
-        filename = f"{self.module_name}_{identifier}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        safe_id = _safe_filename(identifier)
+        filename = f"{self.module_name}_{safe_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         filepath = os.path.join(self.results_dir, filename)
         try:
             with open(filepath, "w", encoding="utf-8") as f:
@@ -189,7 +204,8 @@ class ResultSaver:
             return None
 
     def save_html(self, identifier, title, body_content):
-        filename = f"{self.module_name}_{identifier}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+        safe_id = _safe_filename(identifier)
+        filename = f"{self.module_name}_{safe_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
         filepath = os.path.join(self.results_dir, filename)
         
         html_template = f"""
@@ -217,9 +233,9 @@ class ResultSaver:
     <div class="container">
         <h1>X-RECON SCAN REPORT</h1>
         <div class="meta">
-            Target: <strong>{identifier}</strong><br>
+            Target: <strong>{_esc(identifier)}</strong><br>
             Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}<br>
-            Module: {self.module_name.upper()}
+            Module: {_esc(self.module_name.upper())}
         </div>
         
         <h2>Results</h2>

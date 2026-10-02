@@ -7,11 +7,16 @@
 """
 
 import os
+import re
+import subprocess
 import sys
 from colorama import init, Fore, Style
 
 # Initialize colorama
 init(autoreset=True)
+
+# Only plain module filenames from modules/ may be launched
+_SAFE_MODULE = re.compile(r"^[A-Za-z0-9_]+\.py$")
 
 def print_banner():
     """Display the X-Recon banner"""
@@ -80,12 +85,18 @@ def print_menu():
     print(menu)
 
 def run_module(module_name):
-    """Run a specific module"""
-    module_path = os.path.join('modules', module_name)
-    if os.path.exists(module_path):
-        os.system(f'python {module_path}')
-    else:
+    """Run a specific module safely (no shell, validated filename)."""
+    if not _SAFE_MODULE.match(module_name):
+        print(f"{Fore.RED}[!] Invalid module name: {module_name}{Style.RESET_ALL}")
+        return
+    module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "modules", module_name)
+    if not os.path.isfile(module_path):
         print(f"{Fore.RED}[!] Module not found: {module_name}{Style.RESET_ALL}")
+        return
+    try:
+        subprocess.run([sys.executable, module_path], check=False)
+    except OSError as e:
+        print(f"{Fore.RED}[!] Failed to launch {module_name}: {e}{Style.RESET_ALL}")
 
 def launch_web_dashboard():
     """Launch the web dashboard"""

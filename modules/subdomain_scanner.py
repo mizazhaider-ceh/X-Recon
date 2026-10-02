@@ -3,6 +3,8 @@
 # Ultra-fast, non-blocking DNS resolution for finding subdomains.
 
 import asyncio
+import html as _html
+import re
 import aiodns
 from colorama import init, Fore, Style
 from tqdm.asyncio import tqdm
@@ -114,6 +116,8 @@ def print_and_save_results(target_domain, found_subdomains):
     from datetime import datetime
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     
+    esc_target = _html.escape(target_domain, quote=True)
+    safe_target = re.sub(r"[^\w.\-]", "_", target_domain)
     html_rows = ""
     for subdomain, ip in sorted(found_subdomains):
         print(f"{Fore.GREEN}{subdomain:<40}{Fore.YELLOW}{ip}{Style.RESET_ALL}")
@@ -128,7 +132,7 @@ def print_and_save_results(target_domain, found_subdomains):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subdomain Scan - {target_domain}</title>
+    <title>Subdomain Scan - {esc_target}</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -216,7 +220,7 @@ def print_and_save_results(target_domain, found_subdomains):
         </div>
         
         <div class="meta">
-            <div class="badge">🎯 Target: <strong>{target_domain}</strong></div>
+            <div class="badge">🎯 Target: <strong>{esc_target}</strong></div>
             <div class="badge badge-success">✓ Found: <strong>{len(found_subdomains)}</strong> subdomains</div>
             <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
         </div>
@@ -240,7 +244,7 @@ def print_and_save_results(target_domain, found_subdomains):
 </body>
 </html>"""
 
-    results_file = os.path.join(RESULTS_DIR, f'subdomains_{target_domain}_{timestamp}.html')
+    results_file = os.path.join(RESULTS_DIR, f'subdomains_{safe_target}_{timestamp}.html')
     with open(results_file, 'w', encoding='utf-8') as f:
         f.write(html_content)
     

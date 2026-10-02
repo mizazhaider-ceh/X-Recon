@@ -3,7 +3,9 @@
 # and is completely resilient to common errors.
 # Creator: Muhammad Izaz Haider
 
+import html as _html
 import os
+import re
 import sys
 import socket
 import datetime
@@ -185,8 +187,8 @@ def save_results(domain: str, results: dict):
     if results.get("dns"):
         dns_rows = ""
         for record_type, values in sorted(results["dns"].items()):
-            values_html = "<br>".join(str(v) for v in values) if isinstance(values, list) else str(values)
-            dns_rows += f"<tr><td><strong>{record_type}</strong></td><td>{values_html}</td></tr>"
+            values_html = "<br>".join(_html.escape(str(v), quote=True) for v in values) if isinstance(values, list) else _html.escape(str(values), quote=True)
+            dns_rows += f"<tr><td><strong>{_html.escape(record_type)}</strong></td><td>{values_html}</td></tr>"
         dns_html = f"""
         <div class="section">
             <h2>🌐 DNS Records</h2>
@@ -204,12 +206,12 @@ def save_results(domain: str, results: dict):
             if value:
                 display_key = key.replace('_', ' ').title()
                 if isinstance(value, list):
-                    value_str = "<br>".join(str(item) for item in value)
+                    value_str = "<br>".join(_html.escape(str(item), quote=True) for item in value)
                 elif isinstance(value, datetime):
                     value_str = value.strftime('%Y-%m-%d %H:%M:%S')
                 else:
-                    value_str = str(value)
-                whois_rows += f"<tr><td><strong>{display_key}</strong></td><td>{value_str}</td></tr>"
+                    value_str = _html.escape(str(value), quote=True)
+                whois_rows += f"<tr><td><strong>{_html.escape(display_key)}</strong></td><td>{value_str}</td></tr>"
         whois_html = f"""
         <div class="section">
             <h2>📋 WHOIS Information</h2>
@@ -224,7 +226,7 @@ def save_results(domain: str, results: dict):
     if results.get("subdomains"):
         sub_rows = ""
         for subdomain, ip in sorted(results["subdomains"].items()):
-            sub_rows += f"<tr><td>{subdomain}</td><td><code>{ip}</code></td></tr>"
+            sub_rows += f"<tr><td>{_html.escape(subdomain)}</td><td><code>{_html.escape(ip)}</code></td></tr>"
         subdomains_html = f"""
         <div class="section">
             <h2>🔍 Discovered Subdomains ({len(results['subdomains'])} found)</h2>
@@ -239,7 +241,7 @@ def save_results(domain: str, results: dict):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DNS Intelligence Report - {domain}</title>
+    <title>DNS Intelligence Report - {_html.escape(domain)}</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -344,7 +346,7 @@ def save_results(domain: str, results: dict):
         </div>
         
         <div class="meta">
-            <div class="badge">🎯 Target: <strong>{domain}</strong></div>
+            <div class="badge">🎯 Target: <strong>{_html.escape(domain)}</strong></div>
             <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
         </div>
         
@@ -359,7 +361,8 @@ def save_results(domain: str, results: dict):
 </body>
 </html>"""
 
-    results_file = os.path.join(results_dir, f'dnsscan_{domain}_{timestamp}.html')
+    safe_domain = re.sub(r'[^\w.\-]', '_', domain)
+    results_file = os.path.join(results_dir, f'dnsscan_{safe_domain}_{timestamp}.html')
     with open(results_file, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
@@ -383,6 +386,22 @@ def main():
             f"        └── common_subdomains.txt",
             title="[bold yellow]Configuration Notice[/bold yellow]", border_style="yellow"
         ))
+
+    # Non-interactive mode: target passed as CLI arg (used by the web dashboard)
+    cli_target = sys.argv[1].strip() if len(sys.argv) > 1 else ""
+    if cli_target:
+        console.print(f"[green][i] Target received via CLI: {cli_target}[/green]")
+        target_domain = sanitize_domain(cli_target)
+        console.print(f"[green][i] Sanitized target to: {target_domain}[/green]")
+        all_results = {
+            "dns": get_dns_records(target_domain),
+            "whois": get_whois_info(target_domain),
+        }
+        if WORDLIST_PATH:
+            all_results["subdomains"] = perform_subdomain_scan(target_domain, 50)
+        save_results(target_domain, all_results)
+        console.print("[bold green][+] Done.[/bold green]")
+        return
 
     target_input = console.input(f"\n[bold bright_cyan]Enter the target domain (e.g., tesla.com): [/bold bright_cyan]").strip()
 

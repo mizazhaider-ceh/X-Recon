@@ -3,7 +3,9 @@
 
 import nmap
 from colorama import init, Fore, Style
+import html as _html
 import os
+import re
 import socket
 
 # initialize colorama for colors
@@ -80,7 +82,7 @@ def print_and_save_results(target, scanner_results):
             os_guess = scanner_results[host]['osmatch'][0]['name']
             os_accuracy = scanner_results[host]['osmatch'][0]['accuracy']
             print(f"OS Guess: {Fore.YELLOW}{os_guess} ({os_accuracy}% accuracy){Style.RESET_ALL}\n")
-            os_html = f'<div class="badge badge-os">🖥️ OS: {os_guess} ({os_accuracy}%)</div>'
+            os_html = f'<div class="badge badge-os">🖥️ OS: {_html.escape(os_guess, quote=True)} ({os_accuracy}%)</div>'
 
         # --- create the beautiful table header ---
         print(f"{Style.BRIGHT}{Fore.WHITE}{'PORT':<10}{'STATE':<10}{'SERVICE':<20}{'PRODUCT/VERSION'}{Style.RESET_ALL}")
@@ -105,14 +107,14 @@ def print_and_save_results(target, scanner_results):
                 <tr>
                     <td><code>{port}/{proto}</code></td>
                     <td><span style="color: {port_state_color}; font-weight: bold;">{port_state.upper()}</span></td>
-                    <td>{name}</td>
-                    <td>{full_service_info or '-'}</td>
+                    <td>{_html.escape(name, quote=True)}</td>
+                    <td>{_html.escape(full_service_info, quote=True) if full_service_info else '-'}</td>
                 </tr>"""
         
         html_hosts += f"""
         <div class="host-section">
             <div class="host-header">
-                <h3>🎯 {host} ({hostname or 'Unknown'})</h3>
+                <h3>🎯 {_html.escape(host, quote=True)} ({_html.escape(hostname, quote=True) if hostname else 'Unknown'})</h3>
                 <span class="badge" style="background: rgba({0 if state == 'up' else 255}, {255 if state == 'up' else 71}, {157 if state == 'up' else 87}, 0.2); 
                        border-color: {state_color}; color: {state_color};">
                     {state.upper()}
@@ -139,7 +141,7 @@ def print_and_save_results(target, scanner_results):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nmap Scan Report - {target}</title>
+    <title>Nmap Scan Report - {_html.escape(target, quote=True)}</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -249,7 +251,7 @@ def print_and_save_results(target, scanner_results):
         </div>
         
         <div class="meta">
-            <div class="badge">🎯 Target: <strong>{target}</strong></div>
+            <div class="badge">🎯 Target: <strong>{_html.escape(target, quote=True)}</strong></div>
             <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
         </div>
         

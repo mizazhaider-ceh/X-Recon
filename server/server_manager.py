@@ -109,6 +109,8 @@ class ServerManager:
             creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == 'nt' else 0,
             start_new_session=True if os.name != 'nt' else False
         )
+        # The child inherited the handle; close our copy
+        log_handle.close()
         
         # Save PID
         with open(self.pid_file, 'w') as f:

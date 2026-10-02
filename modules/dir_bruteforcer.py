@@ -3,6 +3,7 @@
 # High-speed web directory scanning.
 
 import asyncio
+import html as _html
 import aiohttp
 from colorama import init, Fore, Style
 from tqdm.asyncio import tqdm
@@ -111,10 +112,11 @@ def print_and_save_results(target_url, found_paths):
         print(f"{color}{status_code:<10}{Fore.YELLOW}{url}{Style.RESET_ALL}")
         
         status_color = "#00ff9d" if 200 <= status_code < 300 else "#00f3ff" if 300 <= status_code < 400 else "#ff4757"
+        esc_url = _html.escape(url, quote=True)
         html_rows += f"""
             <tr>
                 <td><span style="color: {status_color}; font-weight: bold;">{status_code}</span></td>
-                <td><a href="{url}" target="_blank" style="color: #ffa502; text-decoration: none;">{url}</a></td>
+                <td><a href="{esc_url}" target="_blank" style="color: #ffa502; text-decoration: none;">{esc_url}</a></td>
             </tr>"""
 
     html_content = f"""<!DOCTYPE html>
@@ -122,7 +124,7 @@ def print_and_save_results(target_url, found_paths):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Directory Scan - {target_url}</title>
+    <title>Directory Scan - {_html.escape(target_url, quote=True)}</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -210,7 +212,7 @@ def print_and_save_results(target_url, found_paths):
         </div>
         
         <div class="meta">
-            <div class="badge">🎯 Target: <strong>{target_url}</strong></div>
+            <div class="badge">🎯 Target: <strong>{_html.escape(target_url, quote=True)}</strong></div>
             <div class="badge">✓ Found: <strong>{len(found_paths)}</strong> paths</div>
             <div class="badge">📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
         </div>

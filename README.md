@@ -85,7 +85,7 @@ echo "CEREBRAS_API_KEY=your_api_key" > .env
 python main.py
 ```
 
-> 💡 Select **Option 1** → Opens web dashboard at `http://127.0.0.1:8000`
+> 💡 Type **WEB** → Opens the web dashboard at `http://127.0.0.1:8000` (or **SERVER** for start/stop/restart options)
 
 
 

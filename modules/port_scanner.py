@@ -2,6 +2,7 @@
 # v1.1: Foundations & Efficiency (AsyncIO Upgrade)
 
 import asyncio
+import html as _html
 import socket
 import os
 from colorama import init, Fore, Style
@@ -87,9 +88,10 @@ def print_and_save(target_host, target_ip, open_ports):
         svc_str = banner if banner else "Unknown Service"
         console.print(f"[green]{port:<10}[/green][green]OPEN      [/green][yellow]{svc_str}[/yellow]")
         file_lines.append(f"Port: {port} | Status: OPEN | Banner: {svc_str}\n")
-        
-        # Add to HTML
-        html_content += f"<tr><td>{port}</td><td><span style='color:#0aff0a'>OPEN</span></td><td>{svc_str}</td></tr>"
+
+        # Add to HTML (banner is untrusted: escape it)
+        safe_banner = _html.escape(svc_str, quote=True)
+        html_content += f"<tr><td>{port}</td><td><span style='color:#0aff0a'>OPEN</span></td><td>{safe_banner}</td></tr>"
         
     html_content += "</tbody></table>"
 

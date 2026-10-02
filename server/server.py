@@ -23,11 +23,17 @@ except ImportError:
 # Load env/config
 load_dotenv()
 
-# Cerebras Client Init
-from cerebras.cloud.sdk import Cerebras
+# Cerebras Client Init (optional: the web UI works without it, AI chat is disabled)
+try:
+    from cerebras.cloud.sdk import Cerebras
+except ImportError:
+    Cerebras = None
+    print("Info: cerebras_cloud_sdk not installed. AI chat will be disabled. "
+          "Install with: pip install cerebras_cloud_sdk (or run setup_ai.py)")
+
 CEREBRAS_API_KEY = os.getenv("CEREBRAS_API_KEY")
 ai_client = None
-if CEREBRAS_API_KEY:
+if CEREBRAS_API_KEY and Cerebras is not None:
     try:
         ai_client = Cerebras(api_key=CEREBRAS_API_KEY)
     except Exception as e:
